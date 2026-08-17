@@ -106,7 +106,11 @@
 
     <main role="main" id="MainContent">
       {% comment %}ElBodyStart{% endcomment %}{% unless request.design_mode %}{% comment %}{{ content_for_layout }}{% endcomment %}{% render 'easylockdown_body', content_for_layout: content_for_layout, elhDefines: elhRender[1] %}{% else %} {{ content_for_layout }} {% endunless %}{% comment %}ElBodyEnd{% endcomment %}
+ 
+ <h1 class="text-red-800">hello world</h1>
+
     </main>
+
 
     {%- liquid
       sections 'footer-group'
