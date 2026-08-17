@@ -1,0 +1,634 @@
+{% comment %} {% comment %}
+  Custom 4-Column Collection Grid with SVG/PNG Icon Support
+  Inspired by image_f94b63.jpg and image_fa1671.png
+{% endcomment %}
+
+<div class="custom-grid-wrapper section-{{ section.id }}">
+  <div class="custom-grid-container">
+    {% for block in section.blocks %}
+      <div class="custom-grid-item" {{ block.shopify_attributes }}>
+        <!-- Background Image Area -->
+        <div class="grid-item-bg">
+          {% if block.settings.image != blank %}
+            <img src="{{ block.settings.image | img_url: '600x' }}" alt="{{ block.settings.title }}" loading="lazy">
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+        </div>
+        
+        <!-- Content Overlay Area -->
+        <div class="grid-item-content">
+          <!-- Custom Golden Icon Upload -->
+          {% if block.settings.icon != blank %}
+            <div class="grid-item-icon">
+              <img src="{{ block.settings.icon | img_url: '100x' }}" alt="{{ block.settings.title }} icon" loading="lazy">
+            </div>
+          {% endif %}
+          
+          <!-- Collection Title -->
+          <h3 class="grid-item-title">{{ block.settings.title }}</h3>
+          
+          <!-- Shop Now Button -->
+          {% if block.settings.button_text != blank %}
+            <a href="{{ block.settings.link }}" class="grid-item-btn">
+              {{ block.settings.button_text }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% style %}
+  .section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding: 50px 20px;
+    font-family: inherit;
+  }
+  .custom-grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    max-width: 1700px;
+    margin: 0 auto;
+  }
+  .custom-grid-item {
+    position: relative;
+    border: 1px solid {{ section.settings.border_color }};
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1; /* Ensures perfect square layout */
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth overall transition */
+  }
+
+  /* --- 1. Border Glow Effect --- */
+  .custom-grid-item:hover {
+    border-color: {{ section.settings.btn_border_color }};
+    box-shadow: 0 0 20px {{ section.settings.btn_border_color }}; /* Glowing border */
+  }
+
+  .grid-item-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .grid-item-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease; /* Transition for Image Zoom */
+  }
+
+  /* --- 2. Image Zoom Effect --- */
+  .custom-grid-item:hover .grid-item-bg img {
+    transform: scale(1.1); /* Zooms the image slightly in */
+  }
+
+  /* --- 3. Dark Overlay Effect --- */
+  .grid-item-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: #000;
+    opacity: 0;
+    z-index: 1;
+    transition: opacity 0.5s ease;
+  }
+  .custom-grid-item:hover .grid-item-bg::before {
+    opacity: 0.35; /* Darkens the image extra on hover */
+  }
+
+  /* Elegant bottom-heavy dark gradient overlay for text readability */
+  .grid-item-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.1) 100%);
+    z-index: 2;
+  }
+
+  .grid-item-content {
+    position: relative;
+    z-index: 3; /* Increased Z-index to stay above background layers */
+    text-align: center;
+    padding: 25px 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* Icon Container */
+  .grid-item-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0000004d;
+    padding: 5px;
+    border-radius: 50px;
+    transition: transform 0.4s ease;
+  }
+  .custom-grid-item:hover .grid-item-icon {
+    transform: translateY(-5px); /* Small icon bump on hover */
+  }
+
+  .grid-item-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .grid-item-title {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0 0 15px 0;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    transition: transform 0.4s ease;
+  }
+  .custom-grid-item:hover .grid-item-title {
+    transform: translateY(-5px); /* Small title bump on hover */
+  }
+
+  .grid-item-btn {
+    display: inline-block;
+    padding: 10px 28px;
+    border: 1px solid {{ section.settings.btn_border_color }};
+    background-color: {{ section.settings.btn_bg_color }};
+    color: {{ section.settings.btn_text_color }};
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: all 0.4s ease;
+    transform: translateY(15px); /* Button Slide Start Position */
+    opacity: 0.8;
+  }
+  
+  /* --- 4. Button Slide & Fill Effect --- */
+  .custom-grid-item:hover .grid-item-btn {
+    background-color: {{ section.settings.btn_border_color }};
+    color: {{ section.settings.bg_color }};
+    transform: translateY(0); /* Slides up to normal position */
+    opacity: 1;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Adds a slight shadow on the button */
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 1024px) {
+    .custom-grid-container {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+  }
+  @media (max-width: 600px) {
+    .custom-grid-container {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .custom-grid-item {
+      aspect-ratio: 1.1 / 1;
+    }
+    .grid-item-title {
+      font-size: calc({{ section.settings.title_size }}px * 0.9);
+    }
+    /* Disable aggressive hover states on mobile for better UX */
+    .grid-item-btn {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Custom Collection Grid",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Card Border Color",
+      "default": "#3a2d1f"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Title Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Button Customization"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_border_color",
+      "label": "Button Border Color",
+      "default": "#c5a47e"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Button Background Color",
+      "default": "transparent"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_item",
+      "name": "Collection Card",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Golden Icon (PNG / SVG)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "COLLECTION NAME"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "SHOP NOW"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Collection Grid",
+      "blocks": [
+        { "type": "collection_item", "settings": { "title": "SPORTSMEN" } },
+        { "type": "collection_item", "settings": { "title": "HUNTERS & FISHERMEN" } },
+        { "type": "collection_item", "settings": { "title": "FUNNY TEES" } },
+        { "type": "collection_item", "settings": { "title": "DOG COLLECTION" } }
+      ]
+    }
+  ]
+}
+{% endschema %} {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+  Custom 5-Column Collection Grid with SVG/PNG Icon Support
+  Adapted for Left-Aligned Landscape Cards (Desktop) & Wide Banners (Mobile)
+{% endcomment %}
+
+<div class="custom-grid-wrapper section-{{ section.id }}">
+  <div class="custom-grid-container">
+    {% for block in section.blocks %}
+      <div class="custom-grid-item" {{ block.shopify_attributes }}>
+        <!-- Background Image Area -->
+        <div class="grid-item-bg">
+          {% if block.settings.image != blank %}
+            <img src="{{ block.settings.image | img_url: '800x' }}" alt="{{ block.settings.title }}" loading="lazy">
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+        </div>
+        
+        <!-- Content Overlay Area -->
+        <div class="grid-item-content">
+          <!-- Custom Golden Icon Upload -->
+          {% if block.settings.icon != blank %}
+            <div class="grid-item-icon">
+              <img src="{{ block.settings.icon | img_url: '100x' }}" alt="{{ block.settings.title }} icon" loading="lazy">
+            </div>
+          {% endif %}
+          
+          <!-- Collection Title -->
+          <h3 class="grid-item-title">{{ block.settings.title }}</h3>
+          
+          <!-- Shop Now Button -->
+          {% if block.settings.button_text != blank %}
+            <a href="{{ block.settings.link }}" class="grid-item-btn">
+              {{ block.settings.button_text }}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% style %}
+  .section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding: 50px 20px;
+    font-family: inherit;
+  }
+  .custom-grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+  .custom-grid-item {
+    position: relative;
+    border: 1px solid {{ section.settings.border_color }};
+    border-radius: 6px;
+    overflow: hidden;
+    height: 240px; /* Reduced height to make cards appear wider and shorter */
+    display: flex;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* --- Border Glow Effect --- */
+  .custom-grid-item:hover {
+    border-color: {{ section.settings.btn_border_color }};
+    box-shadow: 0 0 15px rgba(197, 164, 126, 0.3); /* Softer glowing border */
+  }
+
+  .grid-item-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .grid-item-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.7s ease; 
+  }
+
+  /* --- Image Zoom Effect --- */
+  .custom-grid-item:hover .grid-item-bg img {
+    transform: scale(1.06); 
+  }
+
+  /* --- Left-to-Right Dark Gradient for readability --- */
+  .grid-item-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.05) 100%);
+    z-index: 2;
+  }
+
+  .grid-item-content {
+    position: relative;
+    z-index: 3;
+    text-align: left;
+    padding: 20px 25px; /* Slightly reduced padding to match shorter height */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Left aligns content */
+    justify-content: center; /* Vertically centers content */
+  }
+
+  /* Icon Container */
+  .grid-item-icon {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    border-radius: 4px;
+  }
+  .grid-item-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .grid-item-title {
+    color: {{ section.settings.text_color }};
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0 0 12px 0;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+  }
+
+  .grid-item-btn {
+    display: inline-block;
+    padding: 9px 24px;
+    border: 1px solid {{ section.settings.btn_border_color }};
+    background-color: {{ section.settings.btn_bg_color }};
+    color: {{ section.settings.btn_text_color }};
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+  
+  /* --- Button Fill Effect --- */
+  .custom-grid-item:hover .grid-item-btn {
+    background-color: {{ section.settings.btn_border_color }};
+    color: #000000; /* Dark text on hover for contrast */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 1300px) {
+    .custom-grid-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .custom-grid-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .custom-grid-container {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .custom-grid-item {
+      height: 135px; /* Creates the slim banner layout for mobile */
+      border-radius: 8px;
+    }
+    .grid-item-content {
+      padding: 15px 20px;
+    }
+    .grid-item-title {
+      font-size: calc({{ section.settings.title_size }}px * 0.85);
+      margin: 0 0 8px 0;
+    }
+    .grid-item-btn {
+      padding: 7px 18px;
+      font-size: 10px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Custom Collection Grid",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Card Border Color",
+      "default": "#3a2d1f"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Title Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Button Customization"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_border_color",
+      "label": "Button Border Color",
+      "default": "#c5a47e"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Button Background Color",
+      "default": "transparent"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_item",
+      "name": "Collection Card",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Golden Icon (PNG / SVG)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "COLLECTION NAME"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "SHOP NOW"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Collection Grid",
+      "blocks": [
+        { "type": "collection_item", "settings": { "title": "SIGNATURE COLLECTION" } },
+        { "type": "collection_item", "settings": { "title": "WATER" } },
+        { "type": "collection_item", "settings": { "title": "FIELD" } },
+        { "type": "collection_item", "settings": { "title": "SRG FALL FESTIVAL 2026" } },
+        { "type": "collection_item", "settings": { "title": "CUSTOM ORDERS", "button_text": "GET A QUOTE" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

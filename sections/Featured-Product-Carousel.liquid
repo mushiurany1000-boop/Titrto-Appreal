@@ -1,0 +1,479 @@
+{% comment %}
+  Custom 5-Column Product Carousel Section with Decorative Headings
+  Inspired by image_fa28dc.jpg and designed for flawless mobile-responsiveness.
+{% endcomment %}
+
+<div class="featured-carousel-wrapper section-{{ section.id }}">
+  <!-- Section Heading with Decorative Golden SVG Ornaments -->
+  <div class="carousel-header">
+    <div class="heading-ornament ornament-left">
+      <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="10" x2="80" y2="10" stroke="{{ section.settings.accent_color }}" stroke-width="1"/>
+        <!-- Custom Trident Left -->
+        <path d="M85 10 L100 10 M93 4 L93 16 M93 4 C95 4 97 6 97 10 C97 14 95 16 93 16" stroke="{{ section.settings.accent_color }}" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="85" cy="10" r="1.5" fill="{{ section.settings.accent_color }}"/>
+      </svg>
+    </div>
+    
+    <h2 class="carousel-main-heading">{{ section.settings.heading_text }}</h2>
+    
+    <div class="heading-ornament ornament-right">
+      <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="20" y1="10" x2="100" y2="10" stroke="{{ section.settings.accent_color }}" stroke-width="1"/>
+        <!-- Custom Trident Right -->
+        <path d="M15 10 L0 10 M7 4 L7 16 M7 4 C5 4 3 6 3 10 C3 14 5 16 7 16" stroke="{{ section.settings.accent_color }}" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="15" cy="10" r="1.5" fill="{{ section.settings.accent_color }}"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Carousel Area with Navigation Arrows -->
+  <div class="carousel-outer-container">
+    <button class="carousel-nav-btn prev-btn" aria-label="Previous Slide">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 19L8 12L15 5" stroke="{{ section.settings.accent_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="carousel-inner-slider" id="Slider-{{ section.id }}">
+      {%- assign collection = collections[section.settings.collection] -%}
+      {%- assign limit = section.settings.product_limit -%}
+
+      {% if collection != blank and collection.products.size > 0 %}
+        {% for product in collection.products limit: limit %}
+          <a href="{{ product.url }}" class="product-carousel-card">
+            <div class="product-card-image-wrap">
+              {% if product.featured_image != blank %}
+                <img src="{{ product.featured_image | img_url: '600x' }}" alt="{{ product.title | escape }}" loading="lazy">
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </div>
+            <div class="product-card-info">
+              <h3 class="product-card-title">{{ product.title }}</h3>
+              <p class="product-card-price">{{ product.price | money }}</p>
+              
+              <!-- Center Aligned Gold Stars -->
+              <div class="product-card-rating">
+                {% for i in (1..5) %}
+                  <svg viewBox="0 0 24 24" fill="{{ section.settings.star_color }}">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                {% endfor %}
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <!-- Placeholder items for customizer preview if no collection chosen -->
+        {% for i in (1..5) %}
+          <div class="product-carousel-card">
+            <div class="product-card-image-wrap">
+              {% capture placeholder_index %}{% cycle '1', '2', '3', '4', '5' %}{% endcapture %}
+              {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            <div class="product-card-info">
+              <h3 class="product-card-title">Demo Product Title {{ i }}</h3>
+              <p class="product-card-price">$29.99</p>
+              <div class="product-card-rating">
+                {% for i in (1..5) %}
+                  <svg viewBox="0 0 24 24" fill="{{ section.settings.star_color }}">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <button class="carousel-nav-btn next-btn" aria-label="Next Slide">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 5L16 12L9 19" stroke="{{ section.settings.accent_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+{% style %}
+  .section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+  
+  /* Heading Styles */
+  .carousel-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    padding: 0 20px;
+  }
+  .carousel-main-heading {
+    color: {{ section.settings.heading_color }};
+    font-size: {{ section.settings.heading_font_size }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: 2px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .heading-ornament {
+    width: 120px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+  }
+  .heading-ornament svg {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Carousel Layout Container */
+  .carousel-outer-container {
+    position: relative;
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+  
+  /* Inner Scroll Area */
+  .carousel-inner-slider {
+    display: flex;
+    gap: {{ section.settings.gap_between }}px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+    padding: 10px 0;
+  }
+  .carousel-inner-slider::-webkit-scrollbar {
+    display: none; /* Safari/Chrome */
+  }
+
+  /* Product Card styling corresponding to image_fa28dc.jpg */
+  .product-carousel-card {
+    flex: 0 0 calc((100% - (4 * {{ section.settings.gap_between }}px)) / 5); /* 5 items on desktop */
+    scroll-snap-align: start;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+  }
+  .product-carousel-card:hover {
+    transform: translateY(-5px);
+  }
+  .product-card-image-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1.15; /* Vertically matching aspect ratio */
+    border-radius: {{ section.settings.img_border_radius }}px;
+    overflow: hidden;
+    background-color: #1a1a1a;
+  }
+  .product-card-image-wrap img, 
+  .product-card-image-wrap svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.4s ease;
+  }
+  .product-carousel-card:hover .product-card-image-wrap img {
+    scale: 1.05;
+  }
+  
+  /* Text and details centering */
+  .product-card-info {
+    text-align: center;
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .product-card-title {
+    color: {{ section.settings.title_color }};
+    font-size: {{ section.settings.title_font_size }}px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Ensures single line restriction */
+    letter-spacing: 0.5px;
+  }
+  .product-card-price {
+    color: {{ section.settings.price_color }};
+    font-size: {{ section.settings.price_font_size }}px;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+  }
+  .product-card-rating {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+  }
+  .product-card-rating svg {
+    width: 15px;
+    height: 15px;
+    fill: #dda108;
+  }
+
+  /* Navigation Buttons */
+  .carousel-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 0;
+    transition: opacity 0.3s ease;
+  }
+  .carousel-nav-btn:hover {
+    opacity: 0.7;
+  }
+  .carousel-nav-btn.prev-btn {
+    left: 10px;
+  }
+  .carousel-nav-btn.next-btn {
+    right: 10px;
+  }
+  .carousel-nav-btn svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Responsive breakpoints for Tablet and Mobile views */
+  @media (max-width: 1200px) {
+    .product-carousel-card {
+      flex: 0 0 calc((100% - (3 * {{ section.settings.gap_between }}px)) / 4); /* 4 items */
+    }
+  }
+  @media (max-width: 991px) {
+    .heading-ornament {
+      width: 80px;
+    }
+    .carousel-main-heading {
+      font-size: calc({{ section.settings.heading_font_size }}px * 0.85);
+    }
+    .product-carousel-card {
+      flex: 0 0 calc((100% - (2 * {{ section.settings.gap_between }}px)) / 3); /* 3 items */
+    }
+  }
+  @media (max-width: 767px) {
+    .carousel-outer-container {
+      padding: 0 45px;
+    }
+    .heading-ornament {
+      display: none; /* Hide ornaments on small devices to prioritize text space */
+    }
+    .product-carousel-card {
+      flex: 0 0 calc((100% - (1 * {{ section.settings.gap_between }}px)) / 2); /* 2 items on Mobile to match reference symmetry */
+    }
+    .carousel-main-heading {
+      font-size: 32px;
+    }
+  }
+{% endstyle %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const slider = document.getElementById("Slider-{{ section.id }}");
+    const prevBtn = document.querySelector(".section-{{ section.id }} .prev-btn");
+    const nextBtn = document.querySelector(".section-{{ section.id }} .next-btn");
+
+    if (slider && prevBtn && nextBtn) {
+      const getScrollAmount = () => {
+        const card = slider.querySelector(".product-carousel-card");
+        if (card) {
+          return card.offsetWidth + parseInt(window.getComputedStyle(slider).gap || 0);
+        }
+        return 300;
+      };
+
+      prevBtn.addEventListener("click", () => {
+        slider.scrollBy({
+          left: -getScrollAmount(),
+          behavior: "smooth"
+        });
+      });
+
+      nextBtn.addEventListener("click", () => {
+        slider.scrollBy({
+          left: getScrollAmount(),
+          behavior: "smooth"
+        });
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Featured Product Carousel",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 5,
+      "max": 15,
+      "step": 1,
+      "label": "Max Products to Load",
+      "default": 10
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "FEATURED PRODUCTS"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 1000,
+      "max": 1900,
+      "step": 50,
+      "unit": "px",
+      "label": "Section Max Width",
+      "default": 1300
+    },
+    {
+      "type": "range",
+      "id": "gap_between",
+      "min": 10,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap Between Cards",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "img_border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Image Border Radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Sizing & Paddings"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 18,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading Size",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Product Title Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Product Price Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Color Schemes"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#0b0b0b"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Tridents & Nav)",
+      "default": "#d4b383"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Product Title Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Product Price Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Stars Rating Color",
+      "default": "#d4b383"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Product Carousel"
+    }
+  ]
+}
+{% endschema %}

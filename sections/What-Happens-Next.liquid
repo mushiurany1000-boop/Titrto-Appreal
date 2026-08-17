@@ -1,0 +1,152 @@
+{% style %}
+  .next-steps-section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  .next-steps-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 60px;
+    color: #fff;
+  }
+  .steps-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    margin-bottom: 80px;
+  }
+  /* Dashed line */
+  .steps-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    border-top: 2px dashed {{ section.settings.line_color }};
+    z-index: 0;
+  }
+  .step-item {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 22%;
+    background: {{ section.settings.bg_color }};
+  }
+  .step-number {
+    background: {{ section.settings.number_bg }};
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .step-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f4f4f93b;
+    margin-bottom: 20px;
+  }
+  .step-icon img { width: 40px; height: 40px; object-fit: contain; }
+  .step-item h3 { font-size: 20px; margin: 5px 0; font-weight: 500; }
+  .step-item .desc-text { font-size: 14px; color: #f8f2f2ff; line-height: 1.5; margin-top: 5px; padding: 0 10px; }
+
+  /* Help Section */
+  .help-box {
+    background: #1a1917;
+    border: 1px solid #f0e6f6;
+    padding: 25px 40px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .help-left { display: flex; align-items: center; gap: 20px; }
+  .btn-contact { background: #9d7b00; color: #fff; padding: 12px 30px; border-radius: 5px; text-decoration: none; font-weight: 500; }
+
+  @media (max-width: 900px) {
+    .steps-wrapper { flex-direction: column; align-items: center; }
+    .steps-wrapper::before { display: none; }
+    .step-item { width: 100%; margin-bottom: 40px; }
+    .help-box { flex-direction: column; text-align: center; gap: 20px; }
+  }
+{% endstyle %}
+
+<section class="next-steps-section-{{ section.id }}">
+  <div class="next-steps-container">
+    <h2 class="section-title">{{ section.settings.title }}</h2>
+    
+    <div class="steps-wrapper">
+      {% for block in section.blocks %}
+        <div class="step-item">
+          <div class="step-number">{{ block.settings.number }}</div>
+          <div class="step-icon"><img src="{{ block.settings.icon | img_url: 'master' }}" alt="{{ block.settings.title }}"></div>
+          <h3>{{ block.settings.title }}</h3>
+          <div class="desc-text">{{ block.settings.text }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="help-box">
+      <div class="help-left">
+        {% if section.settings.help_icon != blank %}
+          <img src="{{ section.settings.help_icon | img_url: '50x' }}" alt="Help">
+        {% endif %}
+        <div>
+          <h4 style="margin:0;">{{ section.settings.help_title }}</h4>
+          <p style="margin:5px 0 0 0; color:#666;">{{ section.settings.help_text }}</p>
+        </div>
+      </div>
+      <a href="{{ section.settings.btn_link }}" class="btn-contact">{{ section.settings.btn_text }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "What Happens Next",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "WHAT HAPPENS NEXT?" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#ffffff" },
+    { "type": "color", "id": "line_color", "label": "Dashed Line Color", "default": "#e0d4e5" },
+    { "type": "color", "id": "number_bg", "label": "Number Circle Color", "default": "#ff7a00" },
+    { "type": "header", "content": "Help Section" },
+    { "type": "image_picker", "id": "help_icon", "label": "Help Icon" },
+    { "type": "text", "id": "help_title", "label": "Help Heading", "default": "Have Questions?" },
+    { "type": "text", "id": "help_text", "label": "Help Subtext", "default": "Our packaging experts are here to help!" },
+    { "type": "text", "id": "btn_text", "label": "Button Text", "default": "Contact Us" },
+    { "type": "url", "id": "btn_link", "label": "Button Link" },
+    { "type": "range", "id": "padding_top", "label": "Padding Top", "min": 0, "max": 100, "default": 50 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding Bottom", "min": 0, "max": 100, "default": 50 }
+  ],
+  "blocks": [
+    { "type": "step", "name": "Step", "settings": [
+      { "type": "text", "id": "number", "label": "Number", "default": "1" },
+      { "type": "image_picker", "id": "icon", "label": "Icon" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Review & Proof" },
+      { "type": "richtext", "id": "text", "label": "Description" }
+    ]}
+  ],
+  "presets": [{ "name": "What Happens Next" }]
+}
+{% endschema %}

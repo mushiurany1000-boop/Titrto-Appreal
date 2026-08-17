@@ -1,0 +1,550 @@
+{%- style -%}
+  .footer-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 100vh;
+  }
+
+  /* --- LEFT SIDE: CONTENT --- */
+  .footer-content-side {
+    flex: 1 1 50%;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .footer-logo-wrap img {
+    max-width: {{ section.settings.logo_width }}px;
+    margin-bottom: 60px;
+  }
+
+  .footer-heading {
+    font-size: {{ section.settings.heading_size }}px;
+    line-height: 1.1;
+    margin-bottom: 30px;
+    background: linear-gradient(
+    180deg,
+    #dffcff 0%,
+    #022140 12%,
+    #0a275240 28%,
+    #61a3e9 45%,
+    #004391 65%,
+    #002142 82%,
+    #65b0fd 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 2px #e3b854;
+  }
+
+  .footer-heading em {
+    font-style: italic;
+    color: #EDE8DB;
+    font-family: fangsong;
+  }
+
+  .footer-subtext {
+    max-width: 400px;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 50px;
+    opacity: 0.9;
+  }
+
+  /* --- Newsletter Form --- */
+  .footer-newsletter-form {
+    max-width: 450px;
+    margin-bottom: 60px;
+  }
+
+  .footer-input-group {
+    position: relative;
+    border: 1px solid {{ section.settings.text_color }};
+    margin-bottom: 25px;
+    border-radius: 4px;
+  }
+
+  .footer-input {
+    width: 100%;
+    background: transparent;
+    border: none !important;
+    padding: 15px 0;
+    color: {{ section.settings.text_color }};
+    font-size: 18px;
+    outline: none;
+  }
+
+  .footer-input::placeholder {
+    color: {{ section.settings.text_color }};
+    opacity: 0.6;
+  }
+
+  .footer-submit-btn {
+    background: #b17e00;
+    
+    color: {{ section.settings.text_color }};
+    padding: 10px 30px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .footer-submit-btn:hover {
+    background: {{ section.settings.text_color }};
+    color: {{ section.settings.bg_color }};
+  }
+
+  /* --- Menus & Social --- */
+  .footer-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    gap: 30px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
+
+  .footer-menu-title {
+    color: #EDE8DB;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .footer-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-menu-list li {
+    margin-bottom: 10px;
+  }
+
+  .footer-menu-list a {
+    text-decoration: none;
+    color: inherit;
+    font-size: 14px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .footer-menu-list a:hover { opacity: 1; }
+
+/* Contact Info Styles */
+  .footer-contact-info {
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.8;
+    margin-bottom: 25px;
+  }
+  
+  .footer-contact-info p {
+    margin: 0 0 5px 0;
+  }
+  
+  .footer-contact-info a {
+    color: inherit;
+    text-decoration: none;
+  }
+  
+  .footer-contact-info a:hover {
+    opacity: 0.8;
+  }
+
+  .footer-social-icons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .footer-social-icons a {
+    color: {{ section.settings.text_color }};
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #201e1e;
+    padding: 6px;
+    border-radius: 50px;
+    border: 2px double #eaeaea;
+  }
+
+  .footer-social-icons a:hover {
+    opacity: 0.7;
+  }
+
+  /* Theme-specific icon sizing */
+  .footer-social-icons svg {
+    width: 22px;
+    height: 22px;
+  }
+.footer-bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #ffffff59;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-end;
+  }
+
+  .custom-footer-payment {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.custom-footer-payment span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.custom-footer-payment img {
+  max-width: 300px;
+  height: auto;
+}
+  
+  .footer-copyright {
+    font-size: 14px;
+    opacity: 0.4;
+    font-weight: 300;
+  }
+  
+  .custom-footer-localization select {
+    background: transparent;
+    color: {{ section.settings.text_color }};
+    border: 1px solid {{ section.settings.text_color }};
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0.8;
+    outline: none;
+  }
+  
+  .custom-footer-localization select option {
+    color: #1a1a1a; /* Ensures dropdown text is readable */
+  }
+
+  /* .footer-copyright {
+    font-size: 14px;
+    margin-top: 60px;
+    opacity: 0.8;
+  } */
+
+  /* --- RIGHT SIDE: IMAGE --- */
+  .footer-image-side {
+    flex: 1 1 50%;
+    position: relative;
+    min-height: 600px;
+  }
+
+  .footer-image-side img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* --- Mobile Response --- */
+  @media screen and (max-width: 768px) {
+    .footer-{{ section.id }} {
+      flex-direction: column-reverse;
+    }
+    .footer-content-side {
+      padding: 60px 20px;
+    }
+    .footer-image-side {
+      flex: none;
+      width: 100%;
+      height: 100vw;
+      min-height: auto;
+    }
+    .footer-bottom-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .footer-heading {
+      font-size: 42px;
+    }
+  }
+{%- endstyle -%}
+
+<footer class="footer-{{ section.id }}">
+  <!-- CONTENT SIDE -->
+  <div class="footer-content-side">
+    <div class="footer-top-content">
+      {% if section.settings.logo != blank %}
+        <div class="footer-logo-wrap">
+          <img src="{{ section.settings.logo | image_url: width: 400 }}" alt="Logo">
+        </div>
+      {% endif %}
+
+      <h2 class="footer-heading">
+        {{ section.settings.heading_start }} 
+        {% if section.settings.heading_italic != blank %}
+          <em>{{ section.settings.heading_italic }}</em>
+        {% endif %}
+      </h2>
+
+      {% if section.settings.subtext != blank %}
+        <p class="footer-subtext">{{ section.settings.subtext }}</p>
+      {% endif %}
+
+      <!-- Newsletter Form -->
+      <div class="footer-newsletter-form">
+        {% form 'customer' %}
+          <input type="hidden" name="contact[tags]" value="newsletter, subscriber">
+          {% if form.posted_successfully? %}
+            <p class="form-success">Thanks for subscribing!</p>
+          {% else %}
+            <div class="footer-input-group">
+              <input type="email" name="contact[email]" class="footer-input" placeholder="Email address" required>
+            </div>
+            <button type="submit" class="footer-submit-btn">Submit ➜</button>
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+
+    <div class="footer-lower-content">
+      <div class="footer-bottom-grid">
+        <!-- Menu 1 -->
+        <div class="footer-col">
+          <h4 class="footer-menu-title">{{ section.settings.menu_1_title }}</h4>
+          <ul class="footer-menu-list">
+            {% for link in linklists[section.settings.menu_1].links %}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <!-- Menu 2 -->
+        <div class="footer-col">
+          <h4 class="footer-menu-title">{{ section.settings.menu_2_title }}</h4>
+          <ul class="footer-menu-list">
+            {% for link in linklists[section.settings.menu_2].links %}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        
+        <!-- Socials -->
+        <div class="footer-col">
+           <h4 class="footer-menu-title">Triton Support</h4>
+          {% if section.settings.contact_info != blank %}
+            <div class="footer-contact-info">
+              {{ section.settings.contact_info }}
+            </div>
+          {% endif %}
+          <div class="footer-social-icons">
+            <div class="footer-social-icons">
+  {% if section.settings.social_fb != blank %}
+    <a href="{{ section.settings.social_fb }}" target="_blank" rel="noreferrer" aria-label="Facebook">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.75 8C15.75 9.91667 15.125 11.6042 13.875 13.0625C12.625 14.5 11.0729 15.3646 9.21875 15.6562V10.25H11.0312L11.375 8H9.21875V6.53125C9.21875 5.73958 9.63542 5.34375 10.4688 5.34375H11.4375V3.4375C10.8542 3.33333 10.2812 3.28125 9.71875 3.28125C9.11458 3.28125 8.59375 3.39583 8.15625 3.625C7.73958 3.85417 7.40625 4.19792 7.15625 4.65625C6.90625 5.11458 6.78125 5.65625 6.78125 6.28125V8H4.8125V10.25H6.78125V15.6562C4.92708 15.3646 3.375 14.5 2.125 13.0625C0.875 11.6042 0.25 9.91667 0.25 8C0.25 5.85417 1 4.03125 2.5 2.53125C4.02083 1.01042 5.85417 0.25 8 0.25C10.1458 0.25 11.9688 1.01042 13.4688 2.53125C14.9896 4.03125 15.75 5.85417 15.75 8Z" fill="currentColor"/>
+      </svg>
+    </a>
+  {% endif %}
+
+  {% if section.settings.social_ig != blank %}
+    <a href="{{ section.settings.social_ig }}" target="_blank" rel="noreferrer" aria-label="Instagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path>
+      </svg>
+    </a>
+  {% endif %}
+
+  {% if section.settings.social_tiktok != blank %}
+    <a href="{{ section.settings.social_tiktok }}" target="_blank" rel="noreferrer" aria-label="TikTok">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path fill="currentColor" d="M448 209.91a210.06 210.06 0 01-122.77-39.25v178.72A162.55 162.55 0 11185 188.31v89.89a74.62 74.62 0 1052.23 71.18V0h88a121.18 121.18 0 001.86 22.17A122.18 122.18 0 00381 102.39a121.43 121.43 0 0067 20.14z"/>
+      </svg>
+    </a>
+  {% endif %}
+</div>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} <div class="footer-copyright">
+        © {{ 'now' | date: "%Y" }} {{ shop.name }}.
+      </div> {% endcomment %}
+
+
+      <div class="footer-bottom-bar">
+        <div class="footer-copyright">
+          © {{ 'now' | date: "%Y" }} {{ shop.name }}. All Rights Reserved.
+        </div>
+        
+        <div class="custom-footer-payment">
+  
+
+  {% if section.settings.payment_image != blank %}
+    <img 
+      src="{{ section.settings.payment_image | image_url: width: 500 }}" 
+      alt="Payment Methods"
+      loading="lazy"
+      width="600"
+      height="auto"
+    >
+  {% endif %}
+</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- IMAGE SIDE -->
+  <div class="footer-image-side">
+    {% if section.settings.side_image != blank %}
+      <img src="{{ section.settings.side_image | image_url: width: 1400 }}" alt="Footer Branding" loading="lazy">
+    {% endif %}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Editorial Split Footer",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f18e74"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo Width",
+      "min": 50,
+      "max": 300,
+      "step": 10,
+      "default": 120,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Main Content"
+    },
+    {
+      "type": "text",
+      "id": "heading_start",
+      "label": "Heading Start",
+      "default": "Go"
+    },
+    {
+      "type": "text",
+      "id": "heading_italic",
+      "label": "Heading Italic Word",
+      "default": "Barefaced."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "min": 30,
+      "max": 100,
+      "default": 64,
+      "unit": "px"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Description",
+      "default": "Subscribe to our email list to get first access to sales, promotions, new products, and more."
+    },
+    {
+      "type": "header",
+      "content": "Navigation Menus"
+    },
+    {
+      "type": "text",
+      "id": "menu_1_title",
+      "label": "Menu 1 Title",
+      "default": "Learn"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "Select Menu 1"
+    },
+    {
+      "type": "text",
+      "id": "menu_2_title",
+      "label": "Menu 2 Title",
+      "default": "Help"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Select Menu 2"
+    },
+
+    {
+      "type": "header",
+      "content": "Contact Information"
+    },
+    {
+      "type": "richtext",
+      "id": "contact_info",
+      "label": "Contact Details",
+      "default": "<p>Triton Apparel, P.O. Box 11, Sutton Massachusetts 01590, United States<br>E-mail: <a href='mailto:1tritonapparel@gmail.com'>1tritonapparel@gmail.com</a></p>"
+    },
+    {
+      "type": "header",
+      "content": "Social & Media"
+    },
+    {
+      "type": "url",
+      "id": "social_ig",
+      "label": "Instagram Link"
+    },
+    {
+      "type": "url",
+      "id": "social_fb",
+      "label": "Facebook Link"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok Link"
+    },
+    {
+  "type": "image_picker",
+  "id": "payment_image",
+  "label": "Payment Icons Image"
+},
+    {
+      "type": "image_picker",
+      "id": "side_image",
+      "label": "Big Side Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial Split Footer"
+    }
+  ]
+}
+{% endschema %}

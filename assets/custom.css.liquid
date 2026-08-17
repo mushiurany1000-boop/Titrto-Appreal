@@ -1,0 +1,342 @@
+{% comment %}
+  All custom CSS in this file will be kept when updating the theme
+  Write your custom CSS below
+{% endcomment %}
+
+body:not(.template-index) .m-header__desktop {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+@media (min-width: 1024px){
+/* .swiper-container.swiper-container-fade.swiper-container-initialized.swiper-container-horizontal.swiper-container-pointer-events {
+    border: 2px double #ffffff38;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px 1px #eaeaea57;
+} */
+/* m-slideshow#template--20349743300777__1621243260e1af0c20 {
+    padding: 10px 50px;
+} */
+
+
+/* a.m-cart-icon-bubble {
+    border: 1px solid #787878;
+    border-radius: 8px;
+    padding: 4px 10px;
+    background: #ffffff26;
+    backdrop-filter: blur(1px);
+}
+m-account-component.m-account-component.m\:block.m-header__account.m-header__account-icon{
+   border: 1px solid #787878;
+    border-radius: 8px;
+    padding: 4px 10px;
+    background: #ffffff26;
+    backdrop-filter: blur(1px);
+} */
+.m-header__right.m\:w-5\/12 {
+    gap: 2px;
+}
+/* m-search-popup.m-header__search.m\:flex.m\:items-center{
+   border: 1px solid #787878;
+    border-radius: 8px;
+    padding: 0px 5px;
+    background: #ffffff26;
+    backdrop-filter: blur(1px);
+
+} */
+button.m-search-form__button {
+    padding: 4px 8px !important;
+}
+}
+
+
+/* Full Final Smooth Custom Cursor CSS */
+@media (pointer: fine) {
+  .custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #f5c542; 
+    border-radius: 50%;
+    pointer-events: none; 
+    z-index: 999999;
+    will-change: transform, width, height;
+    
+    transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
+  }
+
+  
+  .custom-cursor.hovered {
+    width: 32px; 
+    height: 32px;
+    background-color: rgba(245, 197, 66, 0.57); 
+  }
+}
+
+@media (min-width: 1024px){
+.m-slide__media {
+    height: 750px !important;
+}
+}
+@media (max-width: 767px){
+ .m-slide__content.m-richtext.m\:text-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+h2.m-richtext__title.m-slide__title.m\:text-white.h1 {
+    font-size: 40px;
+}
+}
+
+/* header.m-header__desktop.logo-center-menu-left.m-gradient.m-color-footer {
+    padding-bottom: 5px;
+} */
+.m-header__container.container-fluid {
+    padding: 0 25px;
+}
+@media (min-width: 1024px) {
+  .m-slide.m-slide--bottom-left.m-slide--text-h1 {
+    padding: 0 30px;
+  }
+  /* .m-slide__media {
+    border: 1px solid #2c2c2c;
+  } */
+  .m-slide__content.m-richtext.m\:text-left {
+    max-width: 30%;
+    
+  }
+}
+  h2.m-richtext__title.m-slide__title.m\:text-white.h1 {
+    font-family: fantasy;
+}
+@media (max-width: 767px) {
+  .m-slide__media {
+    max-height: 550px;
+  }
+}
+.m-slide__media {
+  height: 780px !important;
+}
+a.m-slide__button-first.m-button.m-button--primary {
+  letter-spacing: 2px;
+  font-size: 12px;
+}
+
+.m-richtext__subtitle.m-slide__subtitle.m\:text-white.h5 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 15px;
+    min-width: 240px;
+
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #fff;
+
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,.12),
+        rgba(255,255,255,.05)
+    );
+
+    border: 1px solid rgba(227,184,84,.9);
+    border-radius: 999px;
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 8px 24px rgba(0,0,0,.35),
+        0 0 20px rgba(227,184,84,.18);
+
+    transition: all .35s ease;
+}
+
+.m-richtext__subtitle.m-slide__subtitle.m\:text-white.h5:hover {
+    transform: translateY(-2px);
+    border-color: #f4c96a;
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.12) inset,
+        0 12px 30px rgba(0,0,0,.45),
+        0 0 30px rgba(244,201,106,.35);
+}
+.m-richtext__subtitle.m-slide__subtitle.m\:text-white.h5::before{
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffe7a5, #d8a62b);
+    box-shadow: 0 0 10px rgba(255,215,0,.7);
+}
+@media (max-width: 767px) {
+    .m-richtext__subtitle.m-slide__subtitle.m\:text-white.h5 {
+        display: none !important;
+    }
+    .m-announcement-bar__content {
+    padding: 1px;
+}
+}
+
+.footer-heading em {
+  font-style: italic;
+  font-family: fangsong;
+  
+  
+ 
+
+  -webkit-text-stroke: 1px #2576c7ff;
+}
+
+.m-header__inner {
+    background-color: #111;
+}
+
+.m-header__inner {
+    margin-left: -3px !important;
+    margin-right: -3px !important;
+}
+
+m-header.m-header.m\:block {
+    margin-bottom: -13px !important;
+}
+
+.m-header__inner {
+    padding: 0 22px;
+}
+
+body#m-theme {
+    padding: 1vw;
+}
+header.m-header__desktop.logo-center-menu-left.m-gradient.m-color-footer {
+    border-bottom: none;
+}
+button.m-search-form__button.m-search-text-button {
+  margin-top: 11px !important;
+    font-size: 12px;
+    border: 1px solid #343434;
+
+}
+@media (min-width: 1024px){
+  /* .m-logo__image-default.m-image {
+    position: absolute;
+    top: -30px;
+    z-index: 10;
+} */
+.container-full {
+    margin-top: -58px;
+}
+
+
+@font-face {
+  font-family: 'Futura Cyrillic Light';
+  src: url('https://cdn.shopify.com/s/files/1/0711/9519/7609/files/FuturaCyrillicBook.ttf?v=1786343265');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+}
+m-search-popup.m-header__search.custom-search-design.m-search-form--full.m\:flex.m\:items-center {
+    width: 230px !important;
+    
+}
+span.m-search-form__label.typing-wrapper {
+    font-family: monospace;
+    font-weight: 500;
+    font-family: 'Futura Cyrillic Light', sans-serif;
+    color: #fff !important;
+}
+span.m-search-form__label.typing-wrapper {
+    padding-left: 0px;
+}
+m-search-popup.m-header__search.custom-search-design.m-search-form--full.m\:flex.m\:items-center {
+    height: 38px;
+}
+
+@media (min-width: 1024px){
+  .custom-tab-image-col {
+    height: 800px;
+}
+h3.grid-item-title {
+    max-width: 120px;
+    line-height: 20px;
+}
+}
+
+.m-header__inner {
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    background: #1a1a1a;
+}
+
+
+
+li.m-product-meta__item.m-product-meta__collection {
+    color: #edcc1f;
+    font-family: sans-serif;
+    font-size: 16px;
+}
+button#ProductSubmitButton-product-quickview {
+    background: #e1bb00;
+    color: #000;
+}
+
+button#ProductSubmitButton-template--20349743169705__main {
+  background: #fbc441;
+}
+span.m-price-item.m-price-item--regular.m\:text-xl.md\:m\:text-2xl {
+  font-size: 26px;
+}
+
+variant-picker#variant-picker-template--20349743169705__main {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.m-product-trust-badge.m\:text-center.m-product-trust-badge--below {
+    background: #000;
+    padding: 1px;
+}
+
+
+
+apps:
+
+p#access-lock-desc {
+    color: #fff !important;
+}
+input.access-code-input.access-widget-input {
+    background: #7a5b05ff;
+}
+.access-widget-card {
+  background: linear-gradient(
+        135deg,
+        #161616 0%,
+        #2b2415 35%,
+        #6f5318 65%,
+        #171717 100%
+    ) !important;
+}
+label.access-widget-label {
+    color: #fff !important;
+}
+
+button#submit-btn {
+    background-color: #222 !important;
+}
+
+h2#access-lock-title {
+    color: #fff !important;
+}
+p#access-lock-desc {
+    color: #fff !important;
+}

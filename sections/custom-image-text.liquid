@@ -1,0 +1,347 @@
+{% comment %}
+  Section: Bestie Blob Hero
+  - Left image auto-clips into the exact organic blob shape (any image you upload)
+  - Right side: heading, subtext, button — all editable
+  - Fully responsive (stacks on mobile)
+{% endcomment %}
+
+<section class="blob-hero-{{ section.id }}">
+  <div class="blob-hero__container{% if section.settings.image_position == 'right' %} blob-hero__container--reverse{% endif %}">
+
+    <div class="blob-hero__image-wrap">
+      <div class="blob-hero__image-blob">
+        {% if section.settings.image != blank %}
+          {{ section.settings.image | image_url: width: 1500 | image_tag:
+            loading: 'lazy',
+            widths: '400,600,800,1000,1200,1500',
+            sizes: '(min-width: 750px) 45vw, 90vw',
+            class: 'blob-hero__image',
+            alt: section.settings.image.alt | default: section.settings.heading
+          }}
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'blob-hero__image placeholder-svg' }}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="blob-hero__content">
+      {% if section.settings.heading != blank %}
+        <h2 class="blob-hero__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.subtext != blank %}
+        <div class="blob-hero__subtext">{{ section.settings.subtext }}</div>
+      {% endif %}
+
+      {% if section.settings.button_label != blank %}
+        <div class="blob-hero__button-wrap">
+          <a href="{{ section.settings.button_link | default: '#' }}" class="blob-hero__button">
+            {{ section.settings.button_label }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+{% comment %} Hidden SVG holding the exact blob clip-path shape {% endcomment %}
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <clipPath id="blobShape-{{ section.id }}" clipPathUnits="objectBoundingBox">
+      <path d="M0.02,0.42
+               C0.02,0.28 0.10,0.15 0.22,0.09
+               C0.33,0.03 0.44,-0.01 0.53,0.02
+               C0.63,0.05 0.60,0.13 0.72,0.10
+               C0.86,0.06 0.99,0.15 1.00,0.29
+               C1.01,0.40 0.92,0.46 0.87,0.56
+               C0.82,0.66 0.95,0.71 0.91,0.83
+               C0.87,0.94 0.73,1.00 0.59,0.98
+               C0.47,0.97 0.41,0.91 0.29,0.90
+               C0.16,0.88 0.06,0.82 0.03,0.70
+               C0.00,0.60 0.02,0.50 0.02,0.42 Z" />
+    </clipPath>
+  </defs>
+</svg>
+
+<style>
+  .blob-hero-{{ section.id }} {
+    width: 100%;
+    overflow: hidden;
+    background-color: {{ section.settings.bg_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__container--reverse {
+    flex-direction: row-reverse;
+  }
+
+  /* Image side */
+  .blob-hero-{{ section.id }} .blob-hero__image-wrap {
+    flex: 0 0 45%;
+    max-width: 45%;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__image-blob {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 800 / 650;
+    -webkit-clip-path: url(#blobShape-{{ section.id }});
+    clip-path: url(#blobShape-{{ section.id }});
+    overflow: hidden;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__image,
+  .blob-hero-{{ section.id }} .blob-hero__image-blob img,
+  .blob-hero-{{ section.id }} .blob-hero__image-blob svg.placeholder-svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Text side */
+  .blob-hero-{{ section.id }} .blob-hero__content {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: {{ section.settings.text_alignment }};
+    gap: 18px;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__heading {
+    margin: 0;
+    font-weight: 800;
+    line-height: 1.15;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: {{ section.settings.heading_color }};
+    font-size: {{ section.settings.heading_size }}px;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__subtext {
+    margin: 0;
+    max-width: 520px;
+    line-height: 1.6;
+    color: {{ section.settings.subtext_color }};
+    font-size: {{ section.settings.subtext_size }}px;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__subtext p {
+    margin: 0;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__button-wrap {
+    margin-top: 6px;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__button {
+    display: inline-block;
+    padding: 14px 32px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 6px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .blob-hero-{{ section.id }} .blob-hero__button:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 989px) {
+    .blob-hero-{{ section.id }} .blob-hero__container {
+      gap: 40px;
+    }
+    .blob-hero-{{ section.id }} .blob-hero__heading {
+      font-size: clamp(28px, 5vw, {{ section.settings.heading_size }}px);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .blob-hero-{{ section.id }} .blob-hero__container,
+    .blob-hero-{{ section.id }} .blob-hero__container--reverse {
+      flex-direction: column;
+      text-align: center;
+      gap: 32px;
+    }
+    .blob-hero-{{ section.id }} .blob-hero__image-wrap,
+    .blob-hero-{{ section.id }} .blob-hero__content {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+    .blob-hero-{{ section.id }} .blob-hero__content {
+      text-align: center !important;
+    }
+    .blob-hero-{{ section.id }} .blob-hero__subtext {
+      max-width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Bestie Blob Hero",
+  "tag": "section",
+  "class": "section-blob-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Left image (any image auto-fits the blob shape)"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Text content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Calling all besties"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#4c9a3f"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 20,
+      "max": 72,
+      "step": 2,
+      "default": 42,
+      "unit": "px"
+    },
+    {
+      "type": "richtext",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "<p>Because late-night talks, inside jokes, and forever BFF vibes deserve jewellery that's just as iconic as your friendship &lt;3</p>"
+    },
+    {
+      "type": "color",
+      "id": "subtext_color",
+      "label": "Subtext color",
+      "default": "#4a4a68"
+    },
+    {
+      "type": "range",
+      "id": "subtext_size",
+      "label": "Subtext size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "default": 17,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Experience Sparkly"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background",
+      "default": "#5aa649"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bestie Blob Hero"
+    }
+  ]
+}
+{% endschema %}

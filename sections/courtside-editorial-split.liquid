@@ -1,0 +1,455 @@
+{% liquid
+  assign section_height = section.settings.section_height
+  assign section_gap = section.settings.gap
+  assign mobile_stack = section.settings.mobile_stack
+%}
+
+<section
+  id="courtside-editorial-{{ section.id }}"
+  class="courtside-editorial-section"
+  style="
+    --section-height: {{ section_height }}px;
+    --mobile-height: {{ section.settings.mobile_height }}px;
+    --section-gap: {{ section_gap }}px;
+    --content-bg: {{ section.settings.content_bg }};
+    --text-color: {{ section.settings.text_color }};
+    --border-color: {{ section.settings.border_color }};
+  "
+>
+  <div class="courtside-editorial__wrapper {% if mobile_stack %}mobile-stack{% endif %}">
+
+    <!-- Left Item -->
+    <div class="courtside-editorial__item courtside-editorial__item--left">
+      {% if section.settings.left_link != blank %}
+        <a href="{{ section.settings.left_link }}" class="courtside-editorial__link" aria-label="Left image link">
+      {% endif %}
+
+      <div class="courtside-editorial__media">
+        {% if section.settings.left_image != blank %}
+          {{
+            section.settings.left_image
+            | image_url: width: 2200
+            | image_tag:
+              loading: 'lazy',
+              widths: '550, 750, 990, 1200, 1500, 2000, 2200',
+              class: 'courtside-editorial__image',
+              alt: section.settings.left_image.alt
+          }}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'courtside-editorial__placeholder' }}
+        {% endif %}
+      </div>
+
+      {% if section.settings.left_link != blank %}
+        </a>
+      {% endif %}
+
+      <div class="courtside-editorial__content">
+        {% if section.settings.left_label != blank %}
+          <div class="courtside-editorial__label">
+            <span></span>
+            {{ section.settings.left_label }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.left_subtext != blank %}
+          <div class="courtside-editorial__subtext">
+            {{ section.settings.left_subtext }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.left_button_label != blank %}
+          <a
+            href="{% if section.settings.left_button_link != blank %}{{ section.settings.left_button_link }}{% else %}#{% endif %}"
+            class="courtside-editorial__button"
+          >
+            {{ section.settings.left_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Item -->
+    <div class="courtside-editorial__item courtside-editorial__item--right {% if section.settings.right_grayscale %}is-grayscale{% endif %}">
+      {% if section.settings.right_link != blank %}
+        <a href="{{ section.settings.right_link }}" class="courtside-editorial__link" aria-label="Right image link">
+      {% endif %}
+
+      <div class="courtside-editorial__media">
+        {% if section.settings.right_image != blank %}
+          {{
+            section.settings.right_image
+            | image_url: width: 2200
+            | image_tag:
+              loading: 'lazy',
+              widths: '550, 750, 990, 1200, 1500, 2000, 2200',
+              class: 'courtside-editorial__image',
+              alt: section.settings.right_image.alt
+          }}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'courtside-editorial__placeholder' }}
+        {% endif %}
+      </div>
+
+      {% if section.settings.right_link != blank %}
+        </a>
+      {% endif %}
+
+      <div class="courtside-editorial__content">
+        {% if section.settings.right_label != blank %}
+          <div class="courtside-editorial__label">
+            <span></span>
+            {{ section.settings.right_label }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.right_subtext != blank %}
+          <div class="courtside-editorial__subtext">
+            {{ section.settings.right_subtext }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.right_button_label != blank %}
+          <a
+            href="{% if section.settings.right_button_link != blank %}{{ section.settings.right_button_link }}{% else %}#{% endif %}"
+            class="courtside-editorial__button"
+          >
+            {{ section.settings.right_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  #courtside-editorial-{{ section.id }} {
+    width: 100%;
+    background: var(--content-bg);
+    color: var(--text-color);
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--section-gap);
+    width: 100%;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__item {
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid var(--border-color);
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__item:last-child {
+    border-right: 0;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__media {
+    position: relative;
+    width: 100%;
+    height: var(--section-height);
+    overflow: hidden;
+    background: #f5f2ed;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__image,
+  #courtside-editorial-{{ section.id }} .courtside-editorial__placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__item.is-grayscale .courtside-editorial__image {
+    filter: grayscale(100%);
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__image {
+    transition: transform 0.6s ease;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__item:hover .courtside-editorial__image {
+    transform: scale(1.025);
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__content {
+    min-height: {{ section.settings.content_height }}px;
+    padding: {{ section.settings.content_padding_top }}px {{ section.settings.content_padding_horizontal }}px {{ section.settings.content_padding_bottom }}px;
+    background: var(--content-bg);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-color);
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__label span {
+    width: 18px;
+    height: 1px;
+    display: inline-block;
+    background: currentColor;
+    opacity: 0.8;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__subtext {
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--text-color);
+    opacity: 0.85;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__button {
+    display: inline-block;
+    position: relative;
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 1.2;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding-bottom: 5px;
+  }
+
+  #courtside-editorial-{{ section.id }} .courtside-editorial__button::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+  }
+
+  @media screen and (max-width: 749px) {
+    #courtside-editorial-{{ section.id }} .courtside-editorial__wrapper.mobile-stack {
+      grid-template-columns: 1fr;
+    }
+
+    #courtside-editorial-{{ section.id }} .courtside-editorial__item {
+      border-right: 0;
+    }
+
+    #courtside-editorial-{{ section.id }} .courtside-editorial__media {
+      height: var(--mobile-height);
+    }
+
+    #courtside-editorial-{{ section.id }} .courtside-editorial__content {
+      min-height: auto;
+      padding: 28px 20px 34px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Courtside Editorial Split",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left image"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left image"
+    },
+    {
+      "type": "url",
+      "id": "left_link",
+      "label": "Left image link"
+    },
+    {
+      "type": "text",
+      "id": "left_label",
+      "label": "Left label",
+      "default": "RESORT '26 · ISSUE 03"
+    },
+    {
+      "type": "text",
+      "id": "left_subtext",
+      "label": "Left italic text",
+      "default": "Made to turn heads."
+    },
+    {
+      "type": "text",
+      "id": "left_button_label",
+      "label": "Left button label",
+      "default": "View the collection"
+    },
+    {
+      "type": "url",
+      "id": "left_button_link",
+      "label": "Left button link"
+    },
+    {
+      "type": "header",
+      "content": "Right image"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Right image"
+    },
+    {
+      "type": "url",
+      "id": "right_link",
+      "label": "Right image link"
+    },
+    {
+      "type": "checkbox",
+      "id": "right_grayscale",
+      "label": "Show right image in black & white",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "right_label",
+      "label": "Right label",
+      "default": "OM FM · NOW PLAYING"
+    },
+    {
+      "type": "text",
+      "id": "right_subtext",
+      "label": "Right italic text",
+      "default": "Tune in to Saint Muse Summer"
+    },
+    {
+      "type": "text",
+      "id": "right_button_label",
+      "label": "Right button label",
+      "default": "Watch the campaign"
+    },
+    {
+      "type": "url",
+      "id": "right_button_link",
+      "label": "Right button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout settings"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Desktop image height",
+      "min": 300,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 760
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile image height",
+      "min": 200,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between images",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_stack",
+      "label": "Stack images on mobile",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "content_height",
+      "label": "Bottom content minimum height",
+      "min": 80,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "content_padding_top",
+      "label": "Content padding top",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "content_padding_bottom",
+      "label": "Content padding bottom",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "content_padding_horizontal",
+      "label": "Content side padding",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "content_bg",
+      "label": "Content background",
+      "default": "#F8F6F2"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#D8D2C8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Courtside Editorial Split"
+    }
+  ]
+}
+{% endschema %}

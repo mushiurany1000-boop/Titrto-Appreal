@@ -1,0 +1,800 @@
+{{ 'component-product-inventory.css' | asset_url | stylesheet_tag }}
+{{ 'tabs.css' | asset_url | stylesheet_tag }}
+{{ 'product-tabs.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-tabs.js' | asset_url }}" defer="defer"></script>
+{%- liquid
+  assign button_type = section.settings.button_type
+  assign product_limit = section.settings.limit
+
+  assign enable_slider = false
+  assign mobile_disable_slider = section.settings.mobile_disable_slider
+  if section.settings.enable_slider
+    assign enable_slider = true
+  endif
+
+  assign items_per_row = section.settings.items_per_row
+  assign tab_header = section.settings.tab_header
+  assign use_scroll_mobile = section.settings.use_scroll_mobile
+
+  assign animation_effect = settings.animations
+  assign animated = false
+  if animation_effect != 'none'
+    assign animated = true
+    if section.settings.animations != 'inherit'
+      assign animation_effect = section.settings.animations
+    endif
+  endif
+
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+
+  assign classes = 'm-section m-product-tabs m:block'
+  if section.settings.custom_class != blank
+    assign classes = classes | append: ' ' | append: section.settings.custom_class
+  endif
+-%}
+
+{%- capture dropdown -%}
+  {% if section.blocks.size > 0 %}
+    <m-select-component data-tab-header="{{ tab_header }}">
+      <select name="country_code" class="js-selectNative" data-tab-select>
+        {% for block in section.blocks %}
+          {%- liquid
+            assign tab_name = block.settings.title
+            assign current_collection = block.settings.collection
+            if block.settings.title == blank
+              assign tab_name = 'Tab ' | append: forloop.index
+              if collection != blank
+                assign tab_name = current_collection.title
+              endif
+            endif
+          -%}
+          <option value="{{ forloop.index0 }}" {% if forloop.index0 == 0 %}selected="selected"{% endif %}>
+            {{ tab_name }}
+          </option>
+        {%- endfor -%}
+      </select>
+    </m-select-component>
+  {% endif %}
+{%- endcapture -%}
+
+<style>
+  #m-section--{{ section.id }} {
+    --column-gap: {{ section.settings.item_gap }}px;
+    --column-gap-mobile: {{ section.settings.item_gap_mobile }}px;
+    --row-gap: {{ section.settings.item_gap | plus: 10 }}px;
+    --items: {{ items_per_row }};
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    background-color: #000000 !important; 
+    color: #ffffff !important;
+  }
+  
+  #m-section--{{ section.id }} .m-section__heading,
+  #m-section--{{ section.id }} .m-section__subheading,
+  #m-section--{{ section.id }} .m-section__description {
+      color: #ffffff !important;
+  }
+
+  /* Desktop Flex Layout */
+  .custom-tab-wrapper {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      gap: 30px !important;
+      align-items: stretch !important;
+  }
+  .custom-tab-image-col {
+      position: relative !important;
+      overflow: hidden !important;
+      border-radius: 8px !important;
+  }
+  .custom-tab-content-col {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow: hidden; 
+  }
+  
+  /* Dynamic Image */
+  .tab-side-image {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      opacity: 0 !important;
+      z-index: 0 !important;
+      transition: opacity 0.4s ease-in-out !important;
+  }
+  .tab-side-image.active {
+      opacity: 1 !important;
+      z-index: 1 !important;
+  }
+
+  /* Desktop View */
+  @media (min-width: 992px) {
+      .custom-tab-image-col {
+          width: calc(30% - 15px) !important;
+          flex-shrink: 0 !important;
+      }
+      .custom-tab-content-col {
+          width: calc(70% - 15px) !important;
+      }
+  }
+
+  /* Mobile Stack View */
+  @media (max-width: 991px) {
+      .custom-tab-wrapper {
+          flex-direction: column !important; 
+          gap: 20px !important;
+      }
+      .custom-tab-image-col {
+          width: 100% !important;
+          min-height: 250px !important; 
+          border-radius: 12px !important;
+      }
+      .custom-tab-content-col {
+          width: 100% !important;
+      }
+  }
+
+  /* Tab Headers (Dark Theme) */
+  #m-section--{{ section.id }} .m-tabs__wrapper {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 30px;
+  }
+  #m-section--{{ section.id }} .m-tab-header {
+      padding: 8px 24px;
+      border: 1px solid #444;
+      border-radius: 50px; 
+      color: #aaa;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background-color: transparent;
+  }
+  #m-section--{{ section.id }} .m-tab-header:hover,
+  #m-section--{{ section.id }} .m-tab-header.is-active,
+  #m-section--{{ section.id }} .m-tab-header.active {
+      background-color: #fff !important;
+      color: #000 !important;
+      border-color: #fff !important;
+  }
+
+  /* Slider Row Equal Height Fix */
+  #m-section--{{ section.id }} .swiper-wrapper {
+      align-items: stretch !important;
+  }
+  #m-section--{{ section.id }} .swiper-slide {
+      height: auto !important; /* Force slides to match tallest */
+      display: flex;
+      flex-direction: column;
+  }
+
+  /* Premium Card Styles */
+  .custom-premium-card {
+      background: #111111; 
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%; /* Ensure full width of column */
+  }
+  .custom-premium-card:hover {
+      border-color: #444;
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px);
+  }
+
+  /* STRICT Image Aspect Ratio (3:4) */
+  .custom-card-img-wrap {
+      position: relative;
+      display: block;
+      border-radius: 4px;
+      overflow: hidden;
+      width: 100%;
+      padding-top: 133.33%; /* Lock aspect ratio to 3:4 exactly */
+      margin-bottom: 15px;
+      background: #000;
+  }
+  .custom-card-img-wrap img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.4s ease, transform 0.5s ease;
+  }
+  .custom-img-primary { opacity: 1; }
+  .custom-img-hover {
+      opacity: 0;
+      z-index: 1;
+  }
+  .custom-premium-card:hover .custom-img-primary { opacity: 0; }
+  .custom-premium-card:hover .custom-img-hover {
+      opacity: 1;
+      transform: scale(1.05);
+  }
+  .custom-premium-card:hover .no-hover-img {
+      opacity: 1;
+      transform: scale(1.05);
+  }
+
+  .custom-sale-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      z-index: 2;
+      text-transform: uppercase;
+  }
+
+  /* Info Section */
+  .custom-card-info {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      text-align: center;
+  }
+
+  /* Title - Fixed height so 1 line and 2 lines take same space */
+  .custom-title {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 500;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 42px; /* Lock height (15px * 1.4 * 2 lines = 42) */
+  }
+  .custom-title:hover { color: #ccc; }
+  
+  /* Price */
+  .custom-price-wrap {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 8px;
+      font-family: 'GTStandard-M';
+  }
+  .custom-price-old {
+      text-decoration: line-through;
+      color: #777;
+      margin-right: 6px;
+      font-weight: 400;
+  }
+
+  /* Yellow 5-Star */
+  .custom-stars {
+      color: #FFD700; 
+      font-size: 15px;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+  }
+
+  /* Dynamic Swatches - Fixed minimum height for missing variants */
+  .custom-swatches {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      min-height: 20px; /* Lock space if no color variant */
+  }
+  .custom-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid #444;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-block;
+  }
+  .custom-swatch:hover {
+      border-color: #fff;
+      transform: scale(1.15);
+  }
+
+  /* Buy Now Button */
+  .custom-buy-form {
+      margin-top: auto; /* Pushes button exactly to the bottom */
+      width: 100%;
+  }
+  .custom-buy-btn {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+      width: 100%;
+      border: none;
+      padding: 12px 15px;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  .custom-buy-btn:hover {
+      background-color: #cccccc !important;
+  }
+
+  /* Theme Navigation Slider Arrows */
+  #m-section--{{ section.id }} .m-slider-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+  }
+  #m-section--{{ section.id }} .m-slider-controls .m-button {
+      background: #222 !important;
+      color: #fff !important;
+      border: 1px solid #444 !important;
+      transition: all 0.3s ease;
+  }
+  #m-section--{{ section.id }} .m-slider-controls .m-button:hover {
+      background: #fff !important;
+      color: #000 !important;
+  }
+</style>
+
+<section id="m-section--{{ section.id }}" class="{{ classes }}">
+  <m-product-tabs
+    id="{{ section.id }}"
+    data-section-type="product-tabs"
+    data-enable-slider="{{ enable_slider }}"
+    data-mobile-disable-slider="{{ section.settings.mobile_disable_slider }}"
+    data-button-type="{{ button_type }}"
+    {% if enable_slider %}
+      data-show-pagination="{{ section.settings.show_pagination }}"
+      data-show-navigation="{{ section.settings.show_navigation }}"
+      data-items="{{ items_per_row }}"
+    {% endif %}
+  >
+    <div class="{{ container }} m-section-my m-section-py">
+      <div class="custom-tab-wrapper">
+        
+        <!-- DYNAMIC FULL IMAGE -->
+        <div class="custom-tab-image-col">
+          {% for block in section.blocks %}
+            {% if block.settings.side_image != blank %}
+              <img 
+                src="{{ block.settings.side_image | image_url: width: 1000 }}" 
+                alt="{{ block.settings.side_image.alt | default: 'Tab Image' }}"
+                class="tab-side-image {% if forloop.first %}active{% endif %}" 
+                data-index="{{ forloop.index0 }}"
+                loading="lazy"
+              >
+            {% else %}
+              {{ 'collection-1' | placeholder_svg_tag: 'tab-side-image placeholder-svg' | replace: '<svg', '<svg class="tab-side-image placeholder-svg ' | append: active_class | append: '" data-index="' | append: forloop.index0 | append: '"' }}
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="custom-tab-content-col">
+          <div class="m-section__header m:text-{{ section.settings.header_alignment }}">
+            {% if section.settings.subheading != blank %}
+              <p class="m-section__subheading m:w-full{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+                {{ section.settings.subheading }}
+              </p>
+            {% endif %}
+
+            {% if tab_header == 'horizontal' %}
+              {% if section.settings.heading != blank %}
+                <h2 class="m-section__heading {{ section.settings.heading_size | default: 'h3' }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}" style="text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">
+                  {{ section.settings.heading }}
+                </h2>
+              {% endif %}
+            {% else %}
+              <div class="m-section__heading {% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+                {% if section.settings.heading != blank %}
+                  <h2 class="{{ section.settings.heading_size | default: 'h3' }}" style="text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">{{ section.settings.heading }}&nbsp;</h2>
+                {% endif %}
+                {{ dropdown }}
+              </div>
+            {% endif %}
+
+            <!-- TABS -->
+            {% if tab_header == 'horizontal' and section.blocks.size > 0 %}
+              <div class="m-section__tabs{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+                <div class="m-tabs__wrapper">
+                  {% for block in section.blocks %}
+                    {%- liquid
+                      assign tab_name = block.settings.title
+                      assign current_collection = block.settings.collection
+                      if block.settings.title == blank
+                        assign tab_name = 'Tab ' | append: forloop.index
+                        if collection != blank
+                          assign tab_name = current_collection.title
+                        endif
+                      endif
+                    -%}
+                    <a class="m-tab-header {% if forloop.first %}is-active active{% endif %}" href="#product-tabs-{{ block.id }}" data-index="{{ forloop.index0 }}">
+                      {{- tab_name -}}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- PRODUCT CARDS -->
+          {% if section.blocks.size > 0 %}
+            <div class="m-product-tabs__content">
+              {% for block in section.blocks %}
+                {%- liquid
+                  assign current_collection = collections[block.settings.collection]
+                  if current_collection != blank and current_collection.products.size > items_per_row and enable_slider
+                    assign enable_slider = true
+                  endif
+                -%}
+                {%- paginate current_collection.products by product_limit -%}
+                  <div
+                    id="product-tabs-{{ block.id }}"
+                    class="m-tab-content m-swiper-overflow"
+                    {{ block.shopify_attributes }}
+                    data-index="{{ forloop.index0 }}"
+                    data-enable-slide="{{ enable_slider }}"
+                  >
+                    <!-- m:grid-2-cols ensures 2 columns on mobile, xl:m:grid-4-cols for desktop 4 products -->
+                    <div class="m-product-list m-slider-control-hover-inside m-mixed-layout {% if mobile_disable_slider or enable_slider != true %} m-mixed-layout--mobile-grid{% endif %}">
+                      <div class="m-mixed-layout__wrapper{% if enable_slider %} swiper-container{% endif %}">
+                        <div class="m-mixed-layout__inner m:grid m:grid-2-cols md:m:grid-3-cols lg:m:grid-4-cols xl:m:grid-{{ items_per_row }}-cols{% if enable_slider %} swiper-wrapper{% endif %}" data-products-container>
+                          
+                          {% for product in current_collection.products limit: product_limit %}
+                            <div class="swiper-slide m:column">
+                              <div class="custom-premium-card">
+                                
+                                <!-- Hover Images -->
+                                <a href="{{ product.url }}" class="custom-card-img-wrap">
+                                  {% if product.compare_at_price > product.price %}
+                                    <span class="custom-sale-badge">Sale</span>
+                                  {% endif %}
+                                  
+                                  {% if product.featured_media %}
+                                    <img class="custom-img-primary {% if product.media[1] == blank %}no-hover-img{% endif %}" src="{{ product.featured_media | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy">
+                                    {% if product.media[1] != blank %}
+                                      <img class="custom-img-hover" src="{{ product.media[1] | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy">
+                                    {% endif %}
+                                  {% else %}
+                                    {{ 'product-1' | placeholder_svg_tag: 'm-placeholder-svg' }}
+                                  {% endif %}
+                                </a>
+                                
+                                <div class="custom-card-info">
+                                  <!-- 1. Title -->
+                                  <a href="{{ product.url }}" class="custom-title">{{ product.title }}</a>
+                                  
+                                  <!-- 2. Price -->
+                                  <div class="custom-price-wrap">
+                                    {% if product.compare_at_price > product.price %}
+                                      <span class="custom-price-old">{{ product.compare_at_price | money }}</span>
+                                    {% endif %}
+                                    <span>{{ product.price | money }}</span>
+                                  </div>
+
+                                  <!-- 3. 5-Star Rating -->
+                                  <div class="custom-stars">★★★★★</div>
+                                  
+                                  <!-- 4. Dynamic Color Variants -->
+                                  <div class="custom-swatches">
+                                    {%- for option in product.options_with_values -%}
+                                      {%- assign downcased_option = option.name | downcase -%}
+                                      {%- if downcased_option == 'color' or downcased_option == 'colour' -%}
+                                        {%- for value in option.values -%}
+                                          {%- assign color_swatch_name = value | split: ' ' | last | handleize -%}
+                                          <span class="custom-swatch" style="background-color: {{ color_swatch_name }}; background-image: url({{ value | handle | append: '.png' | file_url }});" title="{{ value }}"></span>
+                                        {%- endfor -%}
+                                      {%- endif -%}
+                                    {%- endfor -%}
+                                  </div>
+                                  
+                                  <!-- 5. AJAX Buy Now Button (Theme Drawer Integration) -->
+                                  <product-form class="custom-buy-form">
+                                    <form method="post" action="/cart/add" accept-charset="UTF-8" class="form m-add-to-cart-form" enctype="multipart/form-data" novalidate="novalidate" data-type="add-to-cart-form">
+                                      <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+                                      <button type="submit" name="add" class="custom-buy-btn m-spinner-button m-add-to-cart">
+                                        <span class="m-add-to-cart--text">Buy Now</span>
+                                        <span class="m-spinner-icon" style="display:none;">
+                                          <svg class="animate-spin m-svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                        </span>
+                                      </button>
+                                    </form>
+                                  </product-form>
+                                  
+                                </div>
+                              </div>
+                            </div>
+                          {% else %}
+                            <!-- DEMO PLACEHOLDER -->
+                            {% for i in (1..product_limit) %}
+                              <div class="swiper-slide m:column">
+                                <div class="custom-premium-card">
+                                  <div class="custom-card-img-wrap">
+                                    <span class="custom-sale-badge">Sale</span>
+                                    {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                                    {{ 'product-' | append: current | placeholder_svg_tag: 'm-placeholder-svg custom-img-primary' }}
+                                  </div>
+                                  
+                                  <div class="custom-card-info">
+                                    <div class="custom-title">{{ 'homepage.onboarding.product_title' | t }}</div>
+                                    <div class="custom-price-wrap">
+                                      <span class="custom-price-old">$45.00</span>
+                                      <span>$29.99</span>
+                                    </div>
+                                    <div class="custom-stars">★★★★★</div>
+                                    <div class="custom-swatches">
+                                      <span class="custom-swatch" style="background-color: black;"></span>
+                                      <span class="custom-swatch" style="background-color: white;"></span>
+                                    </div>
+                                    <button type="button" class="custom-buy-btn">Buy Now</button>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          {% endfor %}
+
+                        </div>
+                      </div>
+                      
+                      <!-- Desktop Left/Right Navigation Arrows -->
+                      {% if enable_slider %}
+                        {% if section.settings.show_navigation %}
+                          {% render 'slider-controls', extra_classes: 'm:hidden md:m:block', absolute: true, container: section.settings.container, show_nav: true, show_pagination: false %}
+                        {% endif %}
+                      {% endif %}
+                    </div>
+                  </div>
+                {%- endpaginate -%}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </m-product-tabs>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const section = document.querySelector('#m-section--{{ section.id }}');
+  if (!section) return;
+
+  const tabHeaders = section.querySelectorAll('.m-tab-header');
+  const sideImages = section.querySelectorAll('.tab-side-image');
+
+  function updateSideImage(index) {
+      sideImages.forEach(img => {
+          if (img.getAttribute('data-index') === String(index)) {
+              img.classList.add('active');
+          } else {
+              img.classList.remove('active');
+          }
+      });
+  }
+
+  // Trigger on desktop/mobile tab click
+  tabHeaders.forEach(tab => {
+      tab.addEventListener('click', function(e) {
+          e.preventDefault(); // Prevent jump to ID
+          tabHeaders.forEach(t => t.classList.remove('is-active', 'active'));
+          this.classList.add('is-active', 'active');
+          updateSideImage(this.getAttribute('data-index'));
+      });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Custom tab Dark Premium",
+  "class": "m-section-product-tabs",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Product tabs"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "default": "h3",
+      "options": [
+        { "label": "Medium", "value": "h3" },
+        { "label": "Large", "value": "h2" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "header_alignment",
+      "label": "Text alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container-fluid",
+      "options": [
+        { "value": "container-fluid", "label": "Default" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Use container box" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "tab_header",
+      "label": "Tab header type",
+      "default": "horizontal",
+      "options": [
+        { "value": "horizontal", "label": "Horizontal" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "label": "Products to show per tab",
+      "min": 2,
+      "max": 30,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Grid settings"
+    },
+    {
+      "type": "range",
+      "id": "items_per_row",
+      "label": "Products per row (Desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "label": "Column gap",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Slider settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slider",
+      "label": "Enable slider",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show navigation arrows",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "side_image",
+          "label": "Dynamic Image for this Tab"
+        },
+        {
+          "type": "text",
+          "label": "Tab name",
+          "id": "title",
+          "info": "Leave it blank to use collection name"
+        },
+        {
+          "type": "collection",
+          "label": "Collection",
+          "id": "collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom tab Dark",
+      "category": "Product",
+      "settings": {
+        "heading": "Shop By Popular"
+      },
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": { "title": "New Arrivals" }
+        },
+        {
+          "type": "tab",
+          "settings": { "title": "Best Sellers" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,366 @@
+{% comment %}
+  Custom Instagram / Community Grid Section
+  Inspired by image_fb8923.jpg - Features a 6-image row with hover effects,
+  decorative SVG ornaments on heading, and a max width up to 1900px.
+{% endcomment %}
+
+<div class="community-grid-wrapper section-{{ section.id }}">
+  <div class="community-container">
+    
+    <div class="community-header">
+      <div class="heading-line line-left">
+        <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="0" y1="10" x2="80" y2="10" stroke="{{ section.settings.accent_color }}" stroke-width="1"/>
+          <path d="M85 10 L100 10 M93 4 L93 16 M93 4 C95 4 97 6 97 10 C97 14 95 16 93 16" stroke="{{ section.settings.accent_color }}" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="85" cy="10" r="1.5" fill="{{ section.settings.accent_color }}"/>
+        </svg>
+      </div>
+      
+      <h2 class="community-main-heading">{{ section.settings.heading_text }}</h2>
+      
+      <div class="heading-line line-right">
+        <svg viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="20" y1="10" x2="100" y2="10" stroke="{{ section.settings.accent_color }}" stroke-width="1"/>
+          <path d="M15 10 L0 10 M7 4 L7 16 M7 4 C5 4 3 6 3 10 C3 14 5 16 7 16" stroke="{{ section.settings.accent_color }}" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="15" cy="10" r="1.5" fill="{{ section.settings.accent_color }}"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="community-images-grid">
+      {% for block in section.blocks %}
+        {% if block.type == 'image_item' %}
+          <a href="{{ block.settings.link_url | default: '#' }}" class="community-grid-card" target="_blank" {{ block.shopify_attributes }}>
+            <div class="community-img-wrap">
+              {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | img_url: '600x600', crop: 'center' }}" alt="Community image" loading="lazy">
+              {% else %}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+              
+              <div class="community-hover-overlay">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="instagram-icon">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </div>
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.bottom_text != blank %}
+      <div class="community-bottom-footer">
+        <a href="{{ section.settings.bottom_link | default: '#' }}" target="_blank" class="community-footer-link">
+          {{ section.settings.bottom_text }}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% style %}
+  .section-{{ section.id }} {
+    background-color: {{ section.settings.bg_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+  
+  .community-container {
+    max-width: {{ section.settings.max_container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Header SVG with Lines & Text Setup */
+  .community-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 35px;
+  }
+  .community-main-heading {
+    color: {{ section.settings.heading_color }};
+    font-size: {{ section.settings.heading_font_size }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: 2px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .heading-line {
+    width: 120px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+  }
+  .heading-line svg {
+    width: 100%;
+    height: auto;
+  }
+
+  /* 6 Columns Desktop Layout Setup */
+  .community-images-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: {{ section.settings.grid_gap }}px;
+    margin-bottom: 30px;
+  }
+  .community-grid-card {
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+  }
+  .community-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Aspect ratio controlled box */
+    border-radius: {{ section.settings.image_radius }}px;
+    overflow: hidden;
+    background-color: #1a1a1a;
+  }
+  .community-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  /* Hover Overlay Transition State */
+  .community-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+  }
+  .instagram-icon {
+    width: 35px;
+    height: 35px;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+  }
+  
+  /* Hover effects trigger */
+  .community-grid-card:hover .community-hover-overlay {
+    opacity: 1;
+  }
+  .community-grid-card:hover .instagram-icon {
+    transform: scale(1);
+  }
+  .community-grid-card:hover .community-img-wrap img {
+    transform: scale(1.05);
+  }
+
+  /* Bottom Text Footer Styling */
+  .community-bottom-footer {
+    text-align: center;
+    margin-top: 25px;
+  }
+  .community-footer-link {
+    color: {{ section.settings.bottom_text_color }};
+    font-size: {{ section.settings.bottom_text_size }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 1.5px;
+    transition: opacity 0.2s ease;
+  }
+  .community-footer-link:hover {
+    opacity: 0.8;
+  }
+
+  /* Mobile & Tablet Responsive Optimization */
+  @media (max-width: 1199px) {
+    .community-images-grid {
+      grid-template-columns: repeat(3, 1fr); /* 3 items per row on tablets */
+    }
+  }
+  @media (max-width: 767px) {
+    .heading-line {
+      display: none; /* Hide ornaments on mobile viewports for compact screen layout */
+    }
+    .community-main-heading {
+      font-size: 22px;
+    }
+    .community-images-grid {
+      grid-template-columns: repeat(2, 1fr); /* 2 items per row on mobile */
+      gap: 10px;
+    }
+    .community-footer-link {
+      font-size: calc({{ section.settings.bottom_text_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Community Gallery Grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "max_container_width",
+      "min": 1200,
+      "max": 2000,
+      "step": 50,
+      "unit": "px",
+      "label": "Max Container Width",
+      "default": 1900
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "OUR COMMUNITY"
+    },
+    {
+      "type": "text",
+      "id": "bottom_text",
+      "label": "Bottom Text / Handle",
+      "default": "FOLLOW US ON INSTAGRAM @TRITONAPPAREL"
+    },
+    {
+      "type": "url",
+      "id": "bottom_link",
+      "label": "Instagram Link URL"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap Between Images",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Image Border Radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Sizing & Paddings"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 20,
+      "max": 45,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading Size",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "bottom_text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Bottom Text Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Color Theme Control"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#0b0b0b"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Tridents / Icons)",
+      "default": "#d4b383"
+    },
+    {
+      "type": "color",
+      "id": "bottom_text_color",
+      "label": "Bottom Text Color",
+      "default": "#d4b383"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_item",
+      "name": "Gallery Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Select Image"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Image Link (Instagram Post URL)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Community Gallery Grid",
+      "blocks": [
+        { "type": "image_item" },
+        { "type": "image_item" },
+        { "type": "image_item" },
+        { "type": "image_item" },
+        { "type": "image_item" },
+        { "type": "image_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,842 @@
+{% comment %} {% liquid
+  assign animation_effect = settings.animations
+  assign animated = false
+  if animation_effect != 'none'
+    assign animated = true
+    if section.settings.animations != 'inherit'
+      assign animation_effect = section.settings.animations
+    endif
+  endif
+
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+
+  assign classes = 'm-section m-product-details-tabs m:block m-gradient m-color-' | append: section.settings.color_scheme
+  if section.settings.custom_class != blank
+    assign classes = classes | append: ' ' | append: section.settings.custom_class
+  endif
+%}
+{{ 'tabs.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-details-tabs.js' | asset_url }}" defer="defer"></script>
+{%- style -%}
+  #m-section-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+{%- endstyle -%}
+<m-product-details-tabs
+  id="m-section-{{ section.id }}"
+  class="{{ classes }}"
+  data-section-type="product-details-tabs"
+  data-section-id="{{ section.id }}"
+>
+  <div class="{{ container }} m-section-py">
+    <div class="m-tabs {% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+      <div class="m-tabs__header m:display-flex m:justify-center">
+        <div class="m-tabs__header-inner">
+          {% for block in section.blocks %}
+            <div
+              class="m-tab-header h5"
+              data-block-type="{{ block.type }}"
+              data-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.header }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="m-tabs__content m-product-collapsible">
+        {% for block in section.blocks %}
+          <div
+            class="m-tab-content--{{ block.type }} m-tab-content"
+            data-block-type="{{ block.type }}"
+          >
+            <div class="m-tab-content__inner">
+              {% case block.type %}
+                {% when 'description' %}
+                  <div class="rte">
+                    {%- assign description = product.description -%}
+                    {{ description }}
+                  </div>
+                {% when 'reviews' %}
+                  <div class="{{ block.settings.container | default: 'container' }}">
+                    {% render 'product-reviews-app__snippet', custom_liquid: block.settings.custom_liquid %}
+                  </div>
+                {% when 'tab' %}
+                  <div class="rte">
+                    {{ block.settings.content }}
+                    {{ block.settings.content_page.content }}
+                  </div>
+                {% when 'liquid' %}
+                  {{ block.settings.custom_liquid }}
+                {% else %}
+
+              {% endcase %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</m-product-details-tabs>
+{% schema %}
+{
+  "name": "Product information tabs",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container",
+      "options": [
+        {
+          "value": "container",
+          "label": "Fixed width"
+        },
+        {
+          "value": "container-fluid",
+          "label": "Stretched width"
+        },
+        {
+          "value": "container-narrow",
+          "label": "Narrow width"
+        }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme"
+    },
+    {
+      "type": "checkbox",
+      "id": "default_open",
+      "label": "Default open first tab on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Custom Attributes"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom classes"
+    },
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "select",
+      "id": "animations",
+      "label": "Visible in the view animation",
+      "default": "inherit",
+      "options": [
+        {
+          "value": "inherit",
+          "label": "Inherit global setting"
+        },
+        {
+          "value": "fade-in",
+          "label": "Fade in"
+        },
+        {
+          "value": "fade-in-up",
+          "label": "Fade in up"
+        },
+        {
+          "value": "fade-in-left",
+          "label": "Fade in left"
+        },
+        {
+          "value": "fade-in-right",
+          "label": "Fade in right"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "description",
+      "name": "Product description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "This tab will show the product's description"
+        },
+        {
+          "type": "text",
+          "id": "header",
+          "label": "Tab header",
+          "default": "Product description"
+        }
+      ]
+    },
+    {
+      "type": "reviews",
+      "name": "Product reviews",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Requirements",
+          "info": "This section requires a product reviews app to work. Such as Shopify product reviews, Growave, Judge.me, Loox"
+        },
+        {
+          "type": "text",
+          "id": "header",
+          "label": "Tab header",
+          "default": "Product reviews"
+        },
+        {
+          "type": "select",
+          "id": "container",
+          "label": "Container type",
+          "default": "container",
+          "options": [
+            {
+              "value": "container",
+              "label": "Fixed width"
+            },
+            {
+              "value": "container-fluid",
+              "label": "Stretched width"
+            },
+            {
+              "value": "container-narrow",
+              "label": "Narrow width"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Other review app"
+        },
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom liquid",
+          "info": "Paste the liquid code of the app review here"
+        }
+      ]
+    },
+    {
+      "type": "tab",
+      "name": "Custom content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "header",
+          "label": "Tab heading",
+          "default": "Shipping & Return",
+          "placeholder": "Shipping & Return"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Tab content",
+          "default": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned or exchanged within 30 days of delivery.</p>"
+        },
+        {
+          "type": "page",
+          "id": "content_page",
+          "label": "Tab content from page"
+        }
+      ]
+    },
+    {
+      "type": "liquid",
+      "name": "Custom liquid",
+      "settings": [
+        {
+          "type": "text",
+          "id": "header",
+          "label": "Tab heading",
+          "default": "Tab heading"
+        },
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom liquid"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %} {% endcomment %}
+
+
+
+
+
+
+
+
+
+{% liquid
+  assign animation_effect = settings.animations
+  assign animated = false
+  if animation_effect != 'none'
+    assign animated = true
+    if section.settings.animations != 'inherit'
+      assign animation_effect = section.settings.animations
+    endif
+  endif
+
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+
+  assign classes = 'm-section m-product-details-tabs m:block m-gradient m-color-' | append: section.settings.color_scheme
+  if section.settings.custom_class != blank
+    assign classes = classes | append: ' ' | append: section.settings.custom_class
+  endif
+%}
+{{ 'tabs.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-details-tabs.js' | asset_url }}" defer="defer"></script>
+
+{%- capture default_icon -%}
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+{%- endcapture -%}
+
+{%- style -%}
+  #m-section-{{ section.id }} {
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  /* Improved Tab Header Design */
+  #m-section-{{ section.id }} .m-tabs__header {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    margin-bottom: 40px;
+    padding-bottom: 0;
+  }
+  
+  #m-section-{{ section.id }} .m-tab-header {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    padding: 16px 24px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+    margin-bottom: -1px; /* Overlaps border seamlessly */
+  }
+  
+  #m-section-{{ section.id }} .m-tab-header:hover {
+    opacity: 1;
+  }
+  
+  /* Active Tab State */
+  #m-section-{{ section.id }} .m-tab-header.active, 
+  #m-section-{{ section.id }} .m-tab-header.is-active,
+  #m-section-{{ section.id }} .m-tab-header[aria-selected="true"] {
+    color: #e59a43 !important;
+    border-bottom: 2px solid #e59a43;
+    opacity: 1;
+  }
+
+  /* Premium Card Grid for Details List */
+  .custom-details-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    text-align: left;
+  }
+  
+  .details-list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: rgba(128, 128, 128, 0.04);
+    border: 1px solid rgba(128, 128, 128, 0.47);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .details-list-item:hover {
+    background: rgba(128, 128, 128, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    border-color: rgba(247, 255, 137, 0.15);
+  }
+
+  /* Aesthetic Icon Styling */
+  .details-list-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e59a43;
+    background: rgba(229, 154, 67, 0.1); 
+    border-radius: 50%;
+    padding: 10px;
+  }
+  
+  .details-list-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 1.5;
+  }
+  
+  .details-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    padding-top: 2px;
+  }
+  
+  .details-list-heading {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: inherit;
+    line-height: 1.2;
+  }
+  
+  .details-list-text, 
+  .details-list-text p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.7; 
+    line-height: 1.4;
+  }
+
+  /* -------------------------------------------------------------
+     Premium Text Blocks (Care Instructions, Shipping & Policy) 
+     ------------------------------------------------------------- */
+  .premium-text-block {
+    background: #222;
+    border: 1px solid rgba(128, 128, 128, 0.29);
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+    transition: all 0.3s ease;
+  }
+  
+  .premium-text-block:hover {
+    background: rgba(128, 128, 128, 0.04);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    border-color: rgba(128, 128, 128, 0.1);
+  }
+
+  .premium-text-block .rte {
+    font-size: 1rem;
+    line-height: 1.75;
+    opacity: 0.85;
+    letter-spacing: 0.01em;
+  }
+
+  .premium-text-block .rte h1,
+  .premium-text-block .rte h2,
+  .premium-text-block .rte h3,
+  .premium-text-block .rte h4,
+  .premium-text-block .rte h5,
+  .premium-text-block .rte h6 {
+    opacity: 1;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: inherit;
+    letter-spacing: 0.03em;
+  }
+
+  .premium-text-block .rte p {
+    margin-bottom: 16px;
+  }
+  
+  .premium-text-block .rte p:last-child {
+    margin-bottom: 0;
+  }
+
+  .premium-text-block .rte ul, 
+  .premium-text-block .rte ol {
+    padding-left: 20px;
+    margin-bottom: 20px;
+  }
+
+  .premium-text-block .rte li {
+    margin-bottom: 8px;
+  }
+  
+  @media (max-width: 768px) {
+    .custom-details-list {
+      grid-template-columns: 1fr; 
+    }
+    .premium-text-block {
+      padding: 24px;
+    }
+  }
+{%- endstyle -%}
+
+<m-product-details-tabs
+  id="m-section-{{ section.id }}"
+  class="{{ classes }}"
+  data-section-type="product-details-tabs"
+  data-section-id="{{ section.id }}"
+>
+  <div class="{{ container }} m-section-py">
+    <div class="m-tabs {% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+      <div class="m-tabs__header m:display-flex m:justify-center">
+        <div class="m-tabs__header-inner">
+          {% for block in section.blocks %}
+            <div
+              class="m-tab-header h5"
+              data-block-type="{{ block.type }}"
+              data-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.header }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="m-tabs__content m-product-collapsible">
+        {% for block in section.blocks %}
+          <div
+            class="m-tab-content--{{ block.type }} m-tab-content"
+            data-block-type="{{ block.type }}"
+          >
+            <div class="m-tab-content__inner">
+              {% case block.type %}
+                
+                {% when 'details_list' %}
+                  <div class="custom-details-list">
+                    
+                    <!-- Auto SKU Item (Dynamic from Product) -->
+                    {% if block.settings.show_auto_sku and product.selected_or_first_available_variant.sku != blank %}
+                      <div class="details-list-item">
+                        <div class="details-list-icon">
+                          {% if block.settings.sku_icon != blank %}
+                            {{ block.settings.sku_icon }}
+                          {% else %}
+                            {{ default_icon }}
+                          {% endif %}
+                        </div>
+                        <div class="details-list-content">
+                          {% if block.settings.sku_heading != blank %}
+                            <div class="details-list-heading">{{ block.settings.sku_heading }} Mapping</div>
+                          {% endif %}
+                          <div class="details-list-text rte">
+                            <span class="variant-sku">{{ product.selected_or_first_available_variant.sku }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    <!-- 10 Manual Items -->
+                    {% for i in (1..10) %}
+                      {% assign icon_key = 'icon_' | append: i %}
+                      {% assign heading_key = 'heading_' | append: i %}
+                      {% assign text_key = 'text_' | append: i %}
+
+                      {% assign icon = block.settings[icon_key] %}
+                      {% assign heading = block.settings[heading_key] %}
+                      {% assign text = block.settings[text_key] %}
+
+                      {% if text != blank %}
+                        <div class="details-list-item">
+                          <div class="details-list-icon">
+                            {% if icon != blank %}
+                              {{ icon }}
+                            {% else %}
+                              {{ default_icon }}
+                            {% endif %}
+                          </div>
+                          <div class="details-list-content">
+                            {% if heading != blank %}
+                              <div class="details-list-heading">{{ heading }}</div>
+                            {% endif %}
+                            <div class="details-list-text rte">{{ text }}</div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+
+                {% when 'care_instructions' %}
+                  <div class="premium-text-block">
+                    <div class="rte">
+                      {{ block.settings.content }}
+                    </div>
+                  </div>
+
+                {% when 'description' %}
+                  <div class="rte">
+                    {%- assign description = product.description -%}
+                    {{ description }}
+                  </div>
+
+                {% when 'reviews' %}
+                  <div class="{{ block.settings.container | default: 'container' }}">
+                    {% render 'product-reviews-app__snippet', custom_liquid: block.settings.custom_liquid %}
+                  </div>
+
+                {% when 'tab' %}
+                  <div class="premium-text-block">
+                    <div class="rte">
+                      {{ block.settings.content }}
+                      {{ block.settings.content_page.content }}
+                    </div>
+                  </div>
+
+                {% when 'liquid' %}
+                  {{ block.settings.custom_liquid }}
+                {% else %}
+
+              {% endcase %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</m-product-details-tabs>
+
+{% schema %}
+{
+  "name": "Product information tabs",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container type",
+      "default": "container",
+      "options": [
+        { "value": "container", "label": "Fixed width" },
+        { "value": "container-fluid", "label": "Stretched width" },
+        { "value": "container-narrow", "label": "Narrow width" }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme"
+    },
+    {
+      "type": "checkbox",
+      "id": "default_open",
+      "label": "Default open first tab on mobile",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range", "id": "padding_top", "label": "Padding Top", "default": 50, "min": 0, "max": 100, "step": 2, "unit": "px"
+    },
+    {
+      "type": "range", "id": "padding_bottom", "label": "Padding Bottom", "default": 50, "min": 0, "max": 100, "step": 2, "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Custom Attributes"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom classes"
+    },
+    {
+      "type": "header",
+      "content": "Animations"
+    },
+    {
+      "type": "select",
+      "id": "animations",
+      "label": "Visible in the view animation",
+      "default": "inherit",
+      "options": [
+        { "value": "inherit", "label": "Inherit global setting" },
+        { "value": "fade-in", "label": "Fade in" },
+        { "value": "fade-in-up", "label": "Fade in up" },
+        { "value": "fade-in-left", "label": "Fade in left" },
+        { "value": "fade-in-right", "label": "Fade in right" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "details_list",
+      "name": "Icon Details List",
+      "settings": [
+        {
+          "type": "text",
+          "id": "header",
+          "label": "Tab heading",
+          "default": "DETAILS"
+        },
+        
+        { "type": "header", "content": "Auto SKU Item (Dynamic)" },
+        { "type": "checkbox", "id": "show_auto_sku", "label": "Enable Auto SKU", "default": true, "info": "Automatically fetches SKU from the product." },
+        { "type": "html", "id": "sku_icon", "label": "SKU SVG Icon Code" },
+        { "type": "text", "id": "sku_heading", "label": "Heading", "default": "SKU" },
+
+        { "type": "header", "content": "Item 1" },
+        { "type": "html", "id": "icon_1", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_1", "label": "Heading", "default": "Garment" },
+        { "type": "richtext", "id": "text_1", "label": "Description (Metafield Supported)" },
+        
+        { "type": "header", "content": "Item 2" },
+        { "type": "html", "id": "icon_2", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_2", "label": "Heading", "default": "Artwork" },
+        { "type": "richtext", "id": "text_2", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 3" },
+        { "type": "html", "id": "icon_3", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_3", "label": "Heading", "default": "Fit" },
+        { "type": "richtext", "id": "text_3", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 4" },
+        { "type": "html", "id": "icon_4", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_4", "label": "Heading", "default": "Neckline" },
+        { "type": "richtext", "id": "text_4", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 5" },
+        { "type": "html", "id": "icon_5", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_5", "label": "Heading", "default": "Sleeve" },
+        { "type": "richtext", "id": "text_5", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 6" },
+        { "type": "html", "id": "icon_6", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_6", "label": "Heading", "default": "Fabric" },
+        { "type": "richtext", "id": "text_6", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 7" },
+        { "type": "html", "id": "icon_7", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_7", "label": "Heading" },
+        { "type": "richtext", "id": "text_7", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 8" },
+        { "type": "html", "id": "icon_8", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_8", "label": "Heading" },
+        { "type": "richtext", "id": "text_8", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 9" },
+        { "type": "html", "id": "icon_9", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_9", "label": "Heading" },
+        { "type": "richtext", "id": "text_9", "label": "Description (Metafield Supported)" },
+
+        { "type": "header", "content": "Item 10" },
+        { "type": "html", "id": "icon_10", "label": "SVG Icon Code" },
+        { "type": "text", "id": "heading_10", "label": "Heading" },
+        { "type": "richtext", "id": "text_10", "label": "Description (Metafield Supported)" }
+      ]
+    },
+    {
+      "type": "care_instructions",
+      "name": "Care Instructions",
+      "settings": [
+        {
+          "type": "text",
+          "id": "header",
+          "label": "Tab heading",
+          "default": "CARE INSTRUCTIONS"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Care Content",
+          "info": "Add your care instructions here. Supports manual text or dynamic metafields."
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Product description",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "This tab will show the product's description" },
+        { "type": "text", "id": "header", "label": "Tab header", "default": "Product description" }
+      ]
+    },
+    {
+      "type": "reviews",
+      "name": "Product reviews",
+      "limit": 1,
+      "settings": [
+        { "type": "header", "content": "Requirements", "info": "This section requires a product reviews app to work." },
+        { "type": "text", "id": "header", "label": "Tab header", "default": "Product reviews" },
+        {
+          "type": "select",
+          "id": "container",
+          "label": "Container type",
+          "default": "container",
+          "options": [
+            { "value": "container", "label": "Fixed width" },
+            { "value": "container-fluid", "label": "Stretched width" },
+            { "value": "container-narrow", "label": "Narrow width" }
+          ]
+        },
+        { "type": "header", "content": "Other review app" },
+        { "type": "liquid", "id": "custom_liquid", "label": "Custom liquid", "info": "Paste the liquid code of the app review here" }
+      ]
+    },
+    {
+      "type": "tab",
+      "name": "Custom content",
+      "settings": [
+        { "type": "text", "id": "header", "label": "Tab heading", "default": "Shipping & Return" },
+        { "type": "richtext", "id": "content", "label": "Tab content", "default": "<p>Shipping cost is based on weight.</p>" },
+        { "type": "page", "id": "content_page", "label": "Tab content from page" }
+      ]
+    },
+    {
+      "type": "liquid",
+      "name": "Custom liquid",
+      "settings": [
+        { "type": "text", "id": "header", "label": "Tab heading", "default": "Tab heading" },
+        { "type": "liquid", "id": "custom_liquid", "label": "Custom liquid" }
+      ]
+    }
+  ]
+}
+{% endschema %}

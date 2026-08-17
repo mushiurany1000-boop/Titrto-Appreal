@@ -1,0 +1,279 @@
+{%- comment -%}
+  Section: Mission & Vision (two column with side decorative SVG patterns)
+  - Fully editable via Theme Editor: background, fonts, sizes, colors, icons, side SVG patterns
+  - Add/duplicate blocks for more than 2 items (e.g. Mission / Vision / Values)
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign sid = section.id
+-%}
+
+<div class="mv-wrap-{{ sid }}" style="
+  --mv-bg: {{ s.bg_color }};
+  --mv-max-width: {{ s.max_width }}px;
+  --mv-gap: {{ s.column_gap }}px;
+  --mv-divider-color: {{ s.divider_color }};
+  --mv-icon-size: {{ s.icon_size }}px;
+  --mv-icon-bg: {{ s.icon_bg_color }};
+  --mv-icon-color: {{ s.icon_color }};
+  --mv-heading-size: {{ s.heading_size }}px;
+  --mv-heading-color: {{ s.heading_color }};
+  --mv-text-size: {{ s.text_size }}px;
+  --mv-text-color: {{ s.text_color }};
+  --mv-pad-top: {{ s.padding_top }}px;
+  --mv-pad-bottom: {{ s.padding_bottom }}px;
+  --mv-pattern-opacity: {{ s.pattern_opacity }};
+">
+
+  <div class="mv-pattern mv-pattern--left{% unless s.show_pattern_mobile %} mv-pattern--hide-mobile{% endunless %}">
+    {{ s.left_pattern }}
+  </div>
+
+  <div class="mv-pattern mv-pattern--right{% unless s.show_pattern_mobile %} mv-pattern--hide-mobile{% endunless %}">
+    {{ s.right_pattern }}
+  </div>
+
+  <div class="mv-container">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign bs = block.settings
+        assign icon_bg = bs.icon_bg_color | default: s.icon_bg_color
+        assign heading_color = bs.heading_color | default: s.heading_color
+        assign text_color = bs.text_color | default: s.text_color
+      -%}
+      <div class="mv-item"
+        {% if bs.item_bg_color %}style="background-color:{{ bs.item_bg_color }};"{% endif %}
+        {{ block.shopify_attributes }}>
+
+        <div class="mv-icon" style="background-color:{{ icon_bg }};">
+          {%- if bs.icon_image -%}
+            <img
+              src="{{ bs.icon_image | image_url: width: 200 }}"
+              alt="{{ bs.heading | escape }}"
+              loading="lazy"
+              width="{{ s.icon_size | times: 0.5 }}"
+              height="{{ s.icon_size | times: 0.5 }}">
+          {%- else -%}
+            {%- case forloop.index -%}
+              {%- when 1 -%}
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="mv-icon-svg">
+                  <circle cx="24" cy="24" r="17" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="24" cy="24" r="10.5" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="24" cy="24" r="3" fill="currentColor"/>
+                  <path d="M31 17L37 11M37 11H32M37 11V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {%- when 2 -%}
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="mv-icon-svg">
+                  <path d="M4 24C4 24 11 11 24 11C37 11 44 24 44 24C44 24 37 37 24 37C11 37 4 24 4 24Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                  <circle cx="24" cy="24" r="6" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              {%- else -%}
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="mv-icon-svg">
+                  <path d="M24 6L29 18L42 19L32 28L35 41L24 34L13 41L16 28L6 19L19 18L24 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+            {%- endcase -%}
+          {%- endif -%}
+        </div>
+
+        <div class="mv-content">
+          <h3 class="mv-heading" style="color:{{ heading_color }};">{{ bs.heading }}</h3>
+          <div class="mv-text" style="color:{{ text_color }};">{{ bs.text }}</div>
+        </div>
+      </div>
+
+      {%- if s.show_divider and forloop.last == false -%}
+        <div class="mv-divider"></div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{{ s.heading_font | font_face: font_display: 'swap' }}
+{{ s.text_font | font_face: font_display: 'swap' }}
+
+<style>
+  .mv-wrap-{{ sid }} {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--mv-bg);
+    padding-top: var(--mv-pad-top);
+    padding-bottom: var(--mv-pad-bottom);
+  }
+
+  .mv-wrap-{{ sid }} .mv-pattern {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(90px, 16vw, 220px);
+    opacity: var(--mv-pattern-opacity);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .mv-wrap-{{ sid }} .mv-pattern svg { width: 100%; height: 100%; display: block; }
+  .mv-wrap-{{ sid }} .mv-pattern--left { left: 0; }
+  .mv-wrap-{{ sid }} .mv-pattern--right { right: 0; transform: scaleX(-1); }
+
+  .mv-wrap-{{ sid }} .mv-container {
+    position: relative;
+    z-index: 2;
+    max-width: var(--mv-max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--mv-gap);
+  }
+
+  .mv-wrap-{{ sid }} .mv-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 22px;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .mv-wrap-{{ sid }} .mv-icon {
+    flex-shrink: 0;
+    width: var(--mv-icon-size);
+    height: var(--mv-icon-size);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mv-icon-color);
+  }
+  .mv-wrap-{{ sid }} .mv-icon img { width: 50%; height: 50%; object-fit: contain; }
+  .mv-wrap-{{ sid }} .mv-icon-svg { width: 50%; height: 50%; }
+
+  .mv-wrap-{{ sid }} .mv-heading {
+    margin: 0 0 10px;
+    font-family: {{ s.heading_font.family }}, sans-serif;
+    font-weight: {{ s.heading_font.weight }};
+    font-style: {{ s.heading_font.style }};
+    font-size: var(--mv-heading-size);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .mv-wrap-{{ sid }} .mv-text {
+    font-family: {{ s.text_font.family }}, sans-serif;
+    font-weight: {{ s.text_font.weight }};
+    font-style: {{ s.text_font.style }};
+    font-size: var(--mv-text-size);
+    line-height: 1.65;
+  }
+  .mv-wrap-{{ sid }} .mv-text p { margin: 0; }
+
+  .mv-wrap-{{ sid }} .mv-divider {
+    width: 1px;
+    align-self: stretch;
+    background-color: var(--mv-divider-color);
+  }
+
+  @media (max-width: 749px) {
+    .mv-wrap-{{ sid }} {
+      padding-top: calc(var(--mv-pad-top) * 0.6);
+      padding-bottom: calc(var(--mv-pad-bottom) * 0.6);
+    }
+    .mv-wrap-{{ sid }} .mv-container {
+      flex-direction: column;
+      gap: 28px;
+    }
+    .mv-wrap-{{ sid }} .mv-item { width: 100%; }
+    .mv-wrap-{{ sid }} .mv-divider {
+      width: 100%;
+      height: 1px;
+      align-self: auto;
+    }
+    .mv-wrap-{{ sid }} .mv-pattern--hide-mobile { display: none; }
+    .mv-wrap-{{ sid }} .mv-pattern { width: 70px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Mission & Vision",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Container max width", "min": 800, "max": 1600, "step": 20, "unit": "px", "default": 1140 },
+    { "type": "range", "id": "column_gap", "label": "Gap between columns", "min": 20, "max": 140, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72 },
+    { "type": "checkbox", "id": "show_divider", "label": "Show vertical divider between columns", "default": true },
+    { "type": "color", "id": "divider_color", "label": "Divider color", "default": "#DCD5E8" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_color", "label": "Section background", "default": "#F7F4FB" },
+    { "type": "color", "id": "icon_bg_color", "label": "Icon background (default)", "default": "#3E2B7A" },
+    { "type": "color", "id": "icon_color", "label": "Icon glyph color (default)", "default": "#FFFFFF" },
+    { "type": "color", "id": "heading_color", "label": "Heading color (default)", "default": "#3E2B7A" },
+    { "type": "color", "id": "text_color", "label": "Body text color (default)", "default": "#4B4B57" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "font_picker", "id": "heading_font", "label": "Heading font", "default": "helvetica_n7" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 14, "max": 36, "step": 1, "unit": "px", "default": 18 },
+    { "type": "font_picker", "id": "text_font", "label": "Body text font", "default": "helvetica_n4" },
+    { "type": "range", "id": "text_size", "label": "Body text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "icon_size", "label": "Icon circle size", "min": 40, "max": 140, "step": 2, "unit": "px", "default": 78 },
+
+    { "type": "header", "content": "Decorative side SVG pattern" },
+    { "type": "checkbox", "id": "show_pattern_mobile", "label": "Show patterns on mobile", "default": false },
+    { "type": "range", "id": "pattern_opacity", "label": "Pattern opacity", "min": 0, "max": 1, "step": 0.1, "default": 0.5 },
+    {
+      "type": "liquid",
+      "id": "left_pattern",
+      "label": "Left side SVG code",
+      "info": "Paste/edit raw SVG code. Edit the fill/stroke color values directly inside the code to change pattern color.",
+      "default": "<svg viewBox='0 0 200 800' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid slice'><defs><pattern id='mvLeftPattern-{{ section.id }}' width='110' height='110' patternUnits='userSpaceOnUse'><path d='M55 12 C78 30,78 80,55 98 C32 80,32 30,55 12 Z' fill='none' stroke='#9B87B8' stroke-width='1.4'/><circle cx='55' cy='55' r='3.5' fill='#9B87B8'/><path d='M8 55 C20 42,20 68,8 55' fill='none' stroke='#9B87B8' stroke-width='1.2'/><path d='M102 55 C90 42,90 68,102 55' fill='none' stroke='#9B87B8' stroke-width='1.2'/></pattern></defs><rect width='200' height='800' fill='url(#mvLeftPattern-{{ section.id }})'/></svg>"
+    },
+    {
+      "type": "liquid",
+      "id": "right_pattern",
+      "label": "Right side SVG code",
+      "info": "Paste/edit raw SVG code. Edit the fill/stroke color values directly inside the code to change pattern color.",
+      "default": "<svg viewBox='0 0 200 800' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid slice'><defs><pattern id='mvRightPattern-{{ section.id }}' width='110' height='110' patternUnits='userSpaceOnUse'><path d='M55 12 C78 30,78 80,55 98 C32 80,32 30,55 12 Z' fill='none' stroke='#9B87B8' stroke-width='1.4'/><circle cx='55' cy='55' r='3.5' fill='#9B87B8'/><path d='M8 55 C20 42,20 68,8 55' fill='none' stroke='#9B87B8' stroke-width='1.2'/><path d='M102 55 C90 42,90 68,102 55' fill='none' stroke='#9B87B8' stroke-width='1.2'/></pattern></defs><rect width='200' height='800' fill='url(#mvRightPattern-{{ section.id }})'/></svg>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Mission/Vision item",
+      "settings": [
+        { "type": "image_picker", "id": "icon_image", "label": "Icon image", "info": "Optional. Leave empty to use default built-in icon." },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "OUR MISSION" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>To empower businesses with premium, custom packaging solutions that elevate their brand, protect their products, and inspire their customers.</p>" },
+        { "type": "header", "content": "Overrides (optional)" },
+        { "type": "color", "id": "icon_bg_color", "label": "Icon background color" },
+        { "type": "color", "id": "heading_color", "label": "Heading color" },
+        { "type": "color", "id": "text_color", "label": "Text color" },
+        { "type": "color", "id": "item_bg_color", "label": "Item background color" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mission & Vision",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "heading": "OUR MISSION",
+            "text": "<p>To empower businesses with premium, custom packaging solutions that elevate their brand, protect their products, and inspire their customers.</p>"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "heading": "OUR VISION",
+            "text": "<p>To be the most trusted custom packaging partner, known for innovation, quality, sustainability, and exceptional customer experience.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
